@@ -9,7 +9,6 @@ This repo contains "low" and "high" level controllers for robotics control throu
 ### Available Features
 
 - Passive DS Controller:
-  #### Paper
   "Passive Interaction Control With Dynamical Systems", *Klas Kronander and Aude Billard*, 2016, https://ieeexplore.ieee.org/document/7358081
 
 ### Missing Features
