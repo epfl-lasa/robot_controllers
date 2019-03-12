@@ -1,9 +1,10 @@
 # Control Stack
 This repo contains "low" and "high" level controllers for robotics control through Dynamical Systems
 
-### Authors
+### Authors/Maintainer
 
-- Author/Maintainer: Konstantinos Chatzilygeroudis
+- Bernardo Fichera
+- Konstantinos Chatzilygeroudis
 
 ### Available Features
 
