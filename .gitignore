@@ -38,4 +38,4 @@
 build
 
 # macOS files
-.DS_*
+*.DS_Store
