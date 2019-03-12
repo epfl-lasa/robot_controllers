@@ -36,3 +36,6 @@
 
 # build folder
 build
+
+# macOS files
+.DS_Store

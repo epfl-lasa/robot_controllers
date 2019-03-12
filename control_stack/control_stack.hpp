@@ -12,10 +12,10 @@ namespace control_stack {
     {
     public:
         ControlStack() {}        
-        virtual ~ControlStack() {}
+        ~ControlStack() {}
 
-        virtual void Init() {}
-        virtual void Update() {}
+        // virtual void Init() = 0;
+        virtual void Update() = 0;
 
         Input GetInputState() { return q_; }
         Output GetOutputState() { return u_; }

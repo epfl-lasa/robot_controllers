@@ -3,12 +3,6 @@
 
 #include "control_stack.hpp"
 
-typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic> Mat;
-typedef Eigen::Matrix<double,Eigen::Dynamic,1> Vec;
-
-static double MINSPEED = 1e-6;
-static double FLOATEQUAL = 1e-6;
-
 struct ParamsPassiveDS
 {
     Eigen::MatrixXd damping_matrix_,
@@ -72,6 +66,9 @@ namespace control_stack
             }
 
         protected:
+            static constexpr double MINSPEED = 1e-6;
+            static constexpr double FLOATEQUAL = 1e-6;
+
             void AddEigval(double T)
             {
                 state_.eig_matrix_(state_.num_eigval_,state_.num_eigval_) = T;
