@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 
     auto state = mytest.GetParams();
 
-    // std::cout << state.eig_matrix_(0,0) << std::endl;
+    std::cout << state.eig_matrix_(0,0) << std::endl;
 
     return 0;
 }
