@@ -30,3 +30,5 @@ The executables should be inside the `build/examples` folder.
 ### Documentation
 
 Work in progress...
+
+Copyright (c) 2019, **Bernardo Fichera**
