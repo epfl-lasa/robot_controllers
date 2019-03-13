@@ -15,7 +15,7 @@ This repo contains "low" and "high" level controllers for robotics control throu
 
 - Planners
 
-#### Installing using the waf build system
+### Installing
 
 - `mkdir build && cd buil`
 - `cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/install/dir/ ..`
