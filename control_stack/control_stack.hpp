@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <Eigen/Dense>
-#include "macros.hpp"
 #include <iostream>
 
 namespace control_stack {

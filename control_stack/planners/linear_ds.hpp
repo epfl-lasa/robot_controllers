@@ -1,7 +1,7 @@
 #ifndef CONTROL_STACK_LINEAR_DS
 #define CONTROL_STACK_LINEAR_DS
 
-#include "control_stack.hpp"
+#include <control_stack/control_stack.hpp>
 
 struct InputLinearDS
 {

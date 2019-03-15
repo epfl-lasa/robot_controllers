@@ -14,8 +14,7 @@ set(planners_SOURCES
 add_library(ControlStack SHARED ${controllers_SOURCES} ${planners_SOURCES})
 
 target_include_directories(ControlStack PUBLIC
-    ${PROJECT_SOURCE_DIR}/control_stack
-    ${PROJECT_SOURCE_DIR}/control_stack/controllers
+    ${PROJECT_SOURCE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIRS})
 
