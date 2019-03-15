@@ -35,11 +35,11 @@ int main(int argc, char const *argv[])
     // for(size_t i = 0; i < 3; i++)
     //     std::cout << obj.v_[i] << std::endl;
 
-    control_stack::controllers::PassiveDS mytest(5,1.2,2.3,3.4);
+    control_stack::controllers::PassiveDS ciao; //(5,1.2,2.3,3.4)
 
-    auto state = mytest.GetParams();
+    // auto state = mytest.GetParams();
 
-    std::cout << state.eig_matrix_(0,0) << std::endl;
+    // std::cout << state.eig_matrix_(0,0) << std::endl;
 
     return 0;
 }

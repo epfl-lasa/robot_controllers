@@ -14,11 +14,11 @@ namespace control_stack {
         ControlStack() {}        
         ~ControlStack() {}
 
-        // virtual void Init() = 0;
+        virtual bool Init() = 0;
         virtual void Update() = 0;
 
-        Input GetInputState() { return q_; }
-        Output GetOutputState() { return u_; }
+        Input GetInput() { return q_; }
+        Output GetOutput() { return u_; }
         Params GetParams() { return state_; }
 
     protected:

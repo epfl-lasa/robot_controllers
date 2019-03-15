@@ -58,29 +58,21 @@ namespace control_stack
                 state_.damping_matrix_ = Eigen::MatrixXd::Zero(dim,dim);
             }
 
-            void SetInput(Eigen::VectorXd current, Eigen::VectorXd desired)
-            {
-                q_.current_velocity_ = current;
-                q_.desired_velocity_ = desired;
-                Update();
-            }
+            bool Init() override;
+
+            void SetInput(Eigen::VectorXd current, Eigen::VectorXd desired);
+
+            void SetParams(unsigned int dim, std::vector<double>& eigvals);
 
         protected:
-            static constexpr double MINSPEED = 1e-6;
-            static constexpr double FLOATEQUAL = 1e-6;
-
-            void AddEigval(double T)
-            {
-                state_.eig_matrix_(state_.num_eigval_,state_.num_eigval_) = T;
-                state_.num_eigval_++;
-            }
-            
             template <typename... Args> void AddEigval(double T, Args... args)
             {
                 state_.eig_matrix_(state_.num_eigval_,state_.num_eigval_) = T;
                 state_.num_eigval_++;
                 AddEigval(args...);
             }
+
+            void AddEigval(double T);
 
             void Update() override;
 
@@ -93,6 +85,9 @@ namespace control_stack
             void ComputeDamping();
 
             // Missing function for set damping eigenvalue
+
+            static constexpr double MINSPEED = 1e-6;
+            static constexpr double FLOATEQUAL = 1e-6;
             
         };
 
