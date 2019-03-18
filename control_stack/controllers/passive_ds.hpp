@@ -60,9 +60,9 @@ namespace control_stack
 
             bool Init() override;
 
-            void SetInput(Eigen::VectorXd current, Eigen::VectorXd desired);
+            void SetInput(const Eigen::VectorXd& current, const Eigen::VectorXd& desired);
 
-            void SetParams(unsigned int dim, std::vector<double>& eigvals);
+            void SetParams(unsigned int dim, const std::vector<double>& eigvals);
 
         protected:
             template <typename... Args> void AddEigval(double T, Args... args)

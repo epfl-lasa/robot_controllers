@@ -5,7 +5,7 @@ namespace control_stack
 {
     namespace controllers
     {
-        void PassiveDS::SetParams(unsigned int dim, std::vector<double>& eigvals)
+        void PassiveDS::SetParams(unsigned int dim, const std::vector<double>& eigvals)
         {
             // Set input state dimension and eigenvalues set
             state_.num_eigval_ = eigvals.size();
@@ -36,7 +36,7 @@ namespace control_stack
             return true;         
         }
 
-        void PassiveDS::SetInput(Eigen::VectorXd current, Eigen::VectorXd desired)
+        void PassiveDS::SetInput(const Eigen::VectorXd& current, const Eigen::VectorXd& desired)
         {
             q_.current_velocity_ = current;
             q_.desired_velocity_ = desired;
@@ -75,7 +75,7 @@ namespace control_stack
 
         void PassiveDS::ComputeOrthonormalBasis()
         {
-            auto dir = q_.desired_velocity_.normalized(); // or normilize
+            auto dir = q_.desired_velocity_.normalized(); // or normalize
             assert(dir.rows()==state_.basis_matrix_.rows());
             state_.basis_matrix_.col(0)=dir;
             Orthonormalize();
@@ -83,7 +83,7 @@ namespace control_stack
 
         void PassiveDS::ComputeDamping()
         {
-                // only proceed of we have a minimum velocity norm!
+            // only proceed of we have a minimum velocity norm!
             if(q_.desired_velocity_.norm() > MINSPEED)
                 ComputeOrthonormalBasis();
             // otherwise just use the last computed basis

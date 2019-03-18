@@ -37,6 +37,8 @@ int main(int argc, char const *argv[])
 
     control_stack::controllers::PassiveDS ciao; //(5,1.2,2.3,3.4)
 
+    ciao.SetParams(5, {1., 2.});
+
     // auto state = mytest.GetParams();
 
     // std::cout << state.eig_matrix_(0,0) << std::endl;
