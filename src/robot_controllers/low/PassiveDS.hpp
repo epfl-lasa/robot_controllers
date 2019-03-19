@@ -1,35 +1,34 @@
-#ifndef CONTROL_STACK_PASSIVE_DS
-#define CONTROL_STACK_PASSIVE_DS
+#ifndef ROBOT_CONTROLLERS_LOW_PASSIVE_DS_HPP
+#define ROBOT_CONTROLLERS_LOW_PASSIVE_DS_HPP
 
 #include <Eigen/Core>
 
 #include <vector>
 
-#include <control_stack/control_stack.hpp>
+#include <robot_controllers/AbstractController.hpp>
 
-struct ParamsPassiveDS {
-    Eigen::MatrixXd damping_matrix_,
-        basis_matrix_,
-        eig_matrix_;
-    int state_dim_,
-        num_eigval_;
-};
+namespace robot_controllers {
+    namespace low {
+        struct StatePassiveDS {
+            Eigen::MatrixXd damping_matrix_,
+                basis_matrix_,
+                eig_matrix_;
+            int state_dim_,
+                num_eigval_;
+        };
 
-struct InputPassiveDS {
-    Eigen::VectorXd current_velocity_,
-        desired_velocity_;
-};
+        struct InputPassiveDS {
+            Eigen::VectorXd current_velocity_,
+                desired_velocity_;
+        };
 
-struct OutputPassiveDS {
-    Eigen::VectorXd effort_;
-};
+        struct OutputPassiveDS {
+            Eigen::VectorXd effort_;
+        };
 
-namespace control_stack {
-    namespace controllers {
-        class PassiveDS : public control_stack::ControlStack<InputPassiveDS, OutputPassiveDS, ParamsPassiveDS> {
+        class PassiveDS : public robot_controllers::AbstractController<InputPassiveDS, OutputPassiveDS, StatePassiveDS> {
         public:
             PassiveDS() {}
-
             ~PassiveDS() {}
 
             template <typename... Args>
@@ -88,7 +87,7 @@ namespace control_stack {
             static constexpr double MINSPEED = 1e-6;
             static constexpr double FLOATEQUAL = 1e-6;
         };
-    } // namespace controllers
-} // namespace control_stack
+    } // namespace low
+} // namespace robot_controllers
 
-#endif // CONTROL_STACK_PASSIVE_DS
+#endif

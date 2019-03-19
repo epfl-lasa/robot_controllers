@@ -1,9 +1,9 @@
 #include <cassert>
 
-#include "linear_ds.hpp"
+#include "LinearDS.hpp"
 
-namespace control_stack {
-    namespace planners {
+namespace robot_controllers {
+    namespace high {
         LinearDS::LinearDS() {}
 
         LinearDS::LinearDS(Eigen::MatrixXd A, double dt)
@@ -11,21 +11,21 @@ namespace control_stack {
             assert(A.rows() == A.cols());
             state_.A_ = A;
             state_.dim_ = A.rows();
-            state_.dt_ = 0.001;
+            state_.dt_ = dt;
         }
 
         LinearDS::~LinearDS() {}
 
         void LinearDS::SetInput(InputLinearDS input)
         {
-            q_ = input;
+            input_ = input;
             Update();
         }
 
         void LinearDS::Update()
         {
-            u_.desired_velocity_ = state_.A_ * q_.current_position;
-            u_.desired_position_ = q_.current_position + state_.dt_ * u_.desired_velocity_;
+            output_.desired_velocity_ = state_.A_ * input_.current_position;
+            output_.desired_position_ = input_.current_position + state_.dt_ * output_.desired_velocity_;
         }
-    } // namespace planners
-} // namespace control_stack
+    } // namespace high
+} // namespace robot_controllers

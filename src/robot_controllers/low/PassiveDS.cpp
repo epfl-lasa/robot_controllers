@@ -1,9 +1,9 @@
 #include <cassert>
 
-#include "passive_ds.hpp"
+#include "PassiveDS.hpp"
 
-namespace control_stack {
-    namespace controllers {
+namespace robot_controllers {
+    namespace low {
         void PassiveDS::SetParams(unsigned int dim, const std::vector<double>& eigvals)
         {
             // Set input state dimension and eigenvalues set
@@ -37,8 +37,8 @@ namespace control_stack {
 
         void PassiveDS::SetInput(const Eigen::VectorXd& current, const Eigen::VectorXd& desired)
         {
-            q_.current_velocity_ = current;
-            q_.desired_velocity_ = desired;
+            input_.current_velocity_ = current;
+            input_.desired_velocity_ = desired;
             Update();
         }
 
@@ -73,7 +73,7 @@ namespace control_stack {
 
         void PassiveDS::ComputeOrthonormalBasis()
         {
-            auto dir = q_.desired_velocity_.normalized(); // or normalize
+            Eigen::VectorXd dir = input_.desired_velocity_.normalized(); // or normalize
             assert(dir.rows() == state_.basis_matrix_.rows());
             state_.basis_matrix_.col(0) = dir;
             Orthonormalize();
@@ -82,7 +82,7 @@ namespace control_stack {
         void PassiveDS::ComputeDamping()
         {
             // only proceed of we have a minimum velocity norm!
-            if (q_.desired_velocity_.norm() > MINSPEED)
+            if (input_.desired_velocity_.norm() > MINSPEED)
                 ComputeOrthonormalBasis();
             // otherwise just use the last computed basis
             state_.damping_matrix_ = state_.basis_matrix_ * state_.eig_matrix_ * state_.basis_matrix_.transpose();
@@ -91,7 +91,7 @@ namespace control_stack {
         void PassiveDS::Update()
         {
             ComputeDamping();
-            u_.effort_ = -state_.damping_matrix_ * q_.current_velocity_ + state_.eig_matrix_(0, 0) * q_.desired_velocity_;
+            output_.effort_ = -state_.damping_matrix_ * input_.current_velocity_ + state_.eig_matrix_(0, 0) * input_.desired_velocity_;
         }
-    } // namespace controllers
-} // namespace control_stack
+    } // namespace low
+} // namespace robot_controllers
