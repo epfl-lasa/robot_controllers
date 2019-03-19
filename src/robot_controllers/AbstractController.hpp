@@ -13,7 +13,7 @@ namespace robot_controllers {
 
         Input GetInput() { return input_; }
         Output GetOutput() { return output_; }
-        State GetParams() { return state_; }
+        State GetState() { return state_; }
 
     protected:
         Input input_;
