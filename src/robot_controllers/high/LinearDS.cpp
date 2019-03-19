@@ -4,28 +4,29 @@
 
 namespace robot_controllers {
     namespace high {
-        LinearDS::LinearDS() {}
-
-        LinearDS::LinearDS(Eigen::MatrixXd A, double dt)
+        LinearDS::LinearDS(Eigen::MatrixXd A, double dt) : AbstractController(IOType::Position, IOType::Velocity)
         {
             assert(A.rows() == A.cols());
-            state_.A_ = A;
-            state_.dim_ = A.rows();
-            state_.dt_ = dt;
+            params_.A_ = A;
+            params_.dim_ = A.rows();
+            params_.dt_ = dt;
         }
 
-        LinearDS::~LinearDS() {}
-
-        void LinearDS::SetInput(InputLinearDS input)
+        bool LinearDS::Init()
         {
-            input_ = input;
-            Update();
+            input_.desired_.position_ = Eigen::VectorXd::Zero(params_.dim_);
+            return true;
         }
 
-        void LinearDS::Update()
+        void LinearDS::Update(const RobotState& state)
         {
-            output_.desired_velocity_ = state_.A_ * input_.current_position_;
-            output_.desired_position_ = input_.current_position_ + state_.dt_ * output_.desired_velocity_;
+            output_.desired_.velocity_ = params_.A_ * (input_.desired_.position_ - state.position_);
+            output_.desired_.position_ = state.position_ + params_.dt_ * output_.desired_.velocity_;
+        }
+
+        void LinearDS::SetDesired(const Eigen::VectorXd& position)
+        {
+            input_.desired_.position_ = position;
         }
     } // namespace high
 } // namespace robot_controllers

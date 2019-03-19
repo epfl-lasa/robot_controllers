@@ -1,5 +1,10 @@
 set(robot_controllers_HEADERS
     AbstractController.hpp
+    CascadeController.hpp
+)
+
+set(robot_controllers_SOURCES
+    CascadeController.cpp
 )
 
 set(low_level_controllers_SOURCES
@@ -10,7 +15,7 @@ set(high_level_controllers_SOURCES
     high/LinearDS.cpp
 )
 
-add_library(RobotControllers SHARED ${low_level_controllers_SOURCES} ${high_level_controllers_SOURCES})
+add_library(RobotControllers SHARED ${robot_controllers_SOURCES} ${low_level_controllers_SOURCES} ${high_level_controllers_SOURCES})
 
 target_include_directories(RobotControllers PUBLIC
     ${PROJECT_SOURCE_DIR}/src
