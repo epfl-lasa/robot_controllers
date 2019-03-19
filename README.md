@@ -6,14 +6,14 @@ This repo contains "low" and "high" level controllers for robotics control throu
 - Bernardo Fichera
 - Konstantinos Chatzilygeroudis
 
-### Available Features
+### Available Controllers
 
+#### Low-Level controllers
 - Passive DS Controller:
   "Passive Interaction Control With Dynamical Systems", *Klas Kronander and Aude Billard*, 2016, https://ieeexplore.ieee.org/document/7358081
 
-### Missing Features
-
-- Planners
+#### High-Level controllers
+- Simple Linear DS high level controller
 
 ### Installing
 
@@ -23,9 +23,9 @@ This repo contains "low" and "high" level controllers for robotics control throu
 
 #### Running the examples
 
-- `./examples/linear_test`
+- `./src/examples/linear_test`
 
-The executables should be inside the `build/examples` folder.
+The executables should be inside the `build/src/examples` folder.
 
 ### Documentation
 
