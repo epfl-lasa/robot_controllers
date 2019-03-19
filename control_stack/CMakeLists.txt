@@ -14,7 +14,6 @@ add_library(ControlStack SHARED ${controllers_SOURCES} ${planners_SOURCES})
 
 target_include_directories(ControlStack PUBLIC
     ${PROJECT_SOURCE_DIR}
-    ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIRS})
 
 install(TARGETS ControlStack

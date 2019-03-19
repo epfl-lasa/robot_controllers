@@ -1,15 +1,14 @@
-#include "linear_ds.hpp"
-#include <assert.h>
+#include <cassert>
 
-namespace control_stack
-{
-    namespace planners
-    {
+#include "linear_ds.hpp"
+
+namespace control_stack {
+    namespace planners {
         LinearDS::LinearDS() {}
 
-        LinearDS::LinearDS(Eigen::MatrixXd A, double dt) 
+        LinearDS::LinearDS(Eigen::MatrixXd A, double dt)
         {
-            assert( A.rows() == A.cols() );
+            assert(A.rows() == A.cols());
             state_.A_ = A;
             state_.dim_ = A.rows();
             state_.dt_ = 0.001;
@@ -25,9 +24,8 @@ namespace control_stack
 
         void LinearDS::Update()
         {
-            u_.desired_velocity_ = state_.A_*q_.current_position;
-            u_.desired_position_ = q_.current_position + state_.dt_*u_.desired_velocity_;
+            u_.desired_velocity_ = state_.A_ * q_.current_position;
+            u_.desired_position_ = q_.current_position + state_.dt_ * u_.desired_velocity_;
         }
-    }   // namespace planners
-
-} // control_stack
+    } // namespace planners
+} // namespace control_stack

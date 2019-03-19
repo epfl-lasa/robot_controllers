@@ -1,16 +1,11 @@
 #ifndef CONTROL_STACK_CONTROL_STACK_HPP
 #define CONTROL_STACK_CONTROL_STACK_HPP
 
-#include <vector>
-#include <Eigen/Dense>
-#include <iostream>
-
 namespace control_stack {
     template <typename Input, typename Output, typename Params>
-    class ControlStack
-    {
+    class ControlStack {
     public:
-        ControlStack() {}        
+        ControlStack() {}
         ~ControlStack() {}
 
         virtual bool Init() = 0;
@@ -25,8 +20,7 @@ namespace control_stack {
         Output u_;
         Params state_;
     };
-    
-} // namespace control_stack
 
+} // namespace control_stack
 
 #endif // CONTROL_STACK_CONTROL_STACK_HPP
