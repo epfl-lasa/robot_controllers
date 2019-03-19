@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include <control_stack/controllers/passive_ds.hpp>
+#include <robot_controllers/low/PassiveDS.hpp>
 
 template <typename U, typename V>
 class config_controller {
@@ -41,7 +41,7 @@ int main(int argc, char const* argv[])
     // for(size_t i = 0; i < 3; i++)
     //     std::cout << obj.v_[i] << std::endl;
 
-    control_stack::controllers::PassiveDS ciao; //(5,1.2,2.3,3.4)
+    robot_controllers::low::PassiveDS ciao; //(5,1.2,2.3,3.4)
 
     ciao.SetParams(5, {1., 2.});
 
