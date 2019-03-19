@@ -24,8 +24,8 @@ namespace robot_controllers {
 
         void LinearDS::Update()
         {
-            output_.desired_velocity_ = state_.A_ * input_.current_position;
-            output_.desired_position_ = input_.current_position + state_.dt_ * output_.desired_velocity_;
+            output_.desired_velocity_ = state_.A_ * input_.current_position_;
+            output_.desired_position_ = input_.current_position_ + state_.dt_ * output_.desired_velocity_;
         }
     } // namespace high
 } // namespace robot_controllers

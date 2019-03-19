@@ -8,7 +8,7 @@
 namespace robot_controllers {
     namespace high {
         struct InputLinearDS {
-            Eigen::VectorXd current_position;
+            Eigen::VectorXd current_position_;
         };
 
         struct OutputLinearDS {
