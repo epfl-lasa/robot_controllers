@@ -1,10 +1,12 @@
 set(robot_controllers_HEADERS
     AbstractController.hpp
     CascadeController.hpp
+    SumController.hpp
 )
 
 set(robot_controllers_SOURCES
     CascadeController.cpp
+    SumController.cpp
 )
 
 set(low_level_controllers_SOURCES

@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <robot_controllers/CascadeController.hpp>
+#include <robot_controllers/SumController.hpp>
 #include <robot_controllers/high/LinearDS.hpp>
 #include <robot_controllers/low/PassiveDS.hpp>
 
@@ -29,6 +30,17 @@ int main(int argc, char const* argv[])
     cascade.Update(st);
 
     std::cout << cascade.GetOutput().desired_.force_.transpose() << std::endl;
+
+    robot_controllers::SumController sum(robot_controllers::IOType::Velocity, robot_controllers::IOType::Force);
+    sum.AddController<robot_controllers::low::PassiveDS>(5, 1., 2.);
+    sum.AddController<robot_controllers::low::PassiveDS>(5, 4., 4.);
+
+    desired.velocity_ = Eigen::VectorXd::Ones(5);
+    sum.SetInput(desired);
+
+    sum.Update(st);
+
+    std::cout << sum.GetOutput().desired_.force_.transpose() << std::endl;
 
     return 0;
 }

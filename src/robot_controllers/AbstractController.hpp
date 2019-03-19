@@ -10,6 +10,63 @@ namespace robot_controllers {
         All = Position | Velocity | Acceleration | Force // Contains everything
     };
 
+    struct IOTypes {
+        using Type = std::underlying_type<IOType>::type;
+
+        Type value;
+
+        IOTypes(IOType val) : value(static_cast<Type>(val)) {}
+        IOTypes(Type val) : value(val) {}
+
+        bool operator==(IOTypes other) const
+        {
+            return (value == other.value);
+        }
+
+        bool operator!=(IOTypes other) const
+        {
+            return (value != other.value);
+        }
+
+        IOTypes operator|(IOTypes other) const
+        {
+            return IOTypes(value | other.value);
+        }
+
+        IOTypes& operator|=(IOTypes other)
+        {
+            value |= other.value;
+            return *this;
+        }
+
+        IOTypes operator&(IOTypes other) const
+        {
+            return IOTypes(value & other.value);
+        }
+
+        IOTypes& operator&=(IOTypes other)
+        {
+            value &= other.value;
+            return *this;
+        }
+
+        IOTypes operator^(IOTypes other) const
+        {
+            return IOTypes(value ^ other.value);
+        }
+
+        IOTypes& operator^=(IOTypes other)
+        {
+            value ^= other.value;
+            return *this;
+        }
+
+        operator bool() const
+        {
+            return value != 0;
+        }
+    };
+
     struct RobotState {
         Eigen::VectorXd position_,
             velocity_,
@@ -23,7 +80,7 @@ namespace robot_controllers {
         RobotState desired_;
 
         // this should never change
-        const IOType type_;
+        const IOTypes type_;
     };
 
     class AbstractController {

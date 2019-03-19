@@ -7,8 +7,6 @@ namespace robot_controllers {
             if (!ctrl->Init())
                 return false;
 
-        initialized_ = true;
-
         return CheckConsistency();
     }
 
@@ -37,7 +35,7 @@ namespace robot_controllers {
 
     bool CascadeController::CheckConsistency() const
     {
-        IOType t = input_.type_;
+        IOTypes t = input_.type_;
         for (auto& ctrl : controllers_) {
             if (ctrl->GetInput().type_ != t)
                 return false;

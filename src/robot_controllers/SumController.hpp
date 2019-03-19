@@ -1,5 +1,5 @@
-#ifndef ROBOT_CONTROLLERS_CASCADE_CONTROLLER_HPP
-#define ROBOT_CONTROLLERS_CASCADE_CONTROLLER_HPP
+#ifndef ROBOT_CONTROLLERS_SUM_CONTROLLER_HPP
+#define ROBOT_CONTROLLERS_SUM_CONTROLLER_HPP
 
 #include <Eigen/Core>
 
@@ -9,10 +9,10 @@
 #include <robot_controllers/AbstractController.hpp>
 
 namespace robot_controllers {
-    class CascadeController : public AbstractController {
+    class SumController : public AbstractController {
     public:
-        CascadeController(IOType input_type, IOType output_type) : AbstractController(input_type, output_type) {}
-        ~CascadeController() {}
+        SumController(IOType input_type, IOType output_type) : AbstractController(input_type, output_type) {}
+        ~SumController() {}
 
         bool Init() override;
         void Update(const RobotState& state) override;
