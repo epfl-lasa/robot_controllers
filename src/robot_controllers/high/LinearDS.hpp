@@ -7,33 +7,25 @@
 
 namespace robot_controllers {
     namespace high {
-        struct InputLinearDS {
-            Eigen::VectorXd current_position_;
-        };
-
-        struct OutputLinearDS {
-            Eigen::VectorXd desired_velocity_,
-                desired_position_;
-        };
-
-        struct StateLinearDS {
+        struct ParamsLinearDS {
             Eigen::MatrixXd A_;
             unsigned int dim_;
             double dt_;
         };
 
-        class LinearDS : public robot_controllers::AbstractController<InputLinearDS, OutputLinearDS, StateLinearDS> {
+        class LinearDS : public AbstractController {
         public:
-            LinearDS();
-
+            LinearDS() : AbstractController(IOType::Position, IOType::Velocity) {}
             LinearDS(Eigen::MatrixXd A, double dt = 0.001);
+            ~LinearDS() {}
 
-            ~LinearDS();
+            bool Init() override;
+            void Update(const RobotState& state) override;
 
-            void SetInput(InputLinearDS input);
+            void SetDesired(const Eigen::VectorXd& position);
 
         protected:
-            void Update() override;
+            ParamsLinearDS params_;
         };
     } // namespace high
 } // namespace robot_controllers

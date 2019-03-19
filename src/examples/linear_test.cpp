@@ -1,53 +1,46 @@
 #include <iostream>
 #include <vector>
 
+#include <robot_controllers/CascadeController.hpp>
+#include <robot_controllers/SumController.hpp>
+#include <robot_controllers/high/LinearDS.hpp>
 #include <robot_controllers/low/PassiveDS.hpp>
-
-template <typename U, typename V>
-class config_controller {
-public:
-    config_controller(){};
-
-    template <typename... Args>
-    config_controller(U dim, Args... args)
-    {
-        dim_ = dim;
-        add(args...);
-    }
-
-    template <typename T>
-    void add(T t)
-    {
-        v_.push_back(t);
-    }
-
-    template <typename T, typename... Args>
-    void add(T t, Args... args)
-    {
-        v_.push_back(t);
-        add(args...);
-    }
-
-    std::vector<V> v_;
-    U dim_;
-};
 
 int main(int argc, char const* argv[])
 {
-    // config_controller<int,double> obj(5,1.2,2.4,3.7);
+    robot_controllers::low::PassiveDS pds;
+    pds.SetParams(5, {1., 2.});
 
-    // std::cout << obj.dim_ << std::endl;
+    Eigen::MatrixXd A = Eigen::MatrixXd::Identity(5, 5);
+    robot_controllers::high::LinearDS lds(A);
 
-    // for(size_t i = 0; i < 3; i++)
-    //     std::cout << obj.v_[i] << std::endl;
+    robot_controllers::CascadeController cascade(robot_controllers::IOType::Position, robot_controllers::IOType::Force);
+    cascade.AddController<robot_controllers::high::LinearDS>(A);
+    cascade.AddController<robot_controllers::low::PassiveDS>(5, 1., 2.);
 
-    robot_controllers::low::PassiveDS ciao; //(5,1.2,2.3,3.4)
+    std::cout << cascade.Init() << std::endl;
 
-    ciao.SetParams(5, {1., 2.});
+    robot_controllers::RobotState desired;
+    desired.position_ = Eigen::VectorXd::Zero(5);
+    cascade.SetInput(desired);
 
-    // auto state = mytest.GetParams();
+    robot_controllers::RobotState st;
+    st.position_ = Eigen::VectorXd::Ones(5).array() * 0.1;
+    st.velocity_ = Eigen::VectorXd::Zero(5);
+    cascade.Update(st);
 
-    // std::cout << state.eig_matrix_(0,0) << std::endl;
+    std::cout << cascade.GetOutput().desired_.force_.transpose() << std::endl;
+
+    robot_controllers::SumController sum(robot_controllers::IOType::Velocity, robot_controllers::IOType::Force);
+    sum.AddController<robot_controllers::low::PassiveDS>(5, 1., 2.);
+    sum.AddController<robot_controllers::low::PassiveDS>(5, 4., 4.);
+
+    desired.velocity_ = Eigen::VectorXd::Ones(5);
+    sum.SetInput(desired);
+
+    sum.Update(st);
+
+    std::cout << sum.GetOutput().desired_.force_.transpose() << std::endl;
 
     return 0;
 }

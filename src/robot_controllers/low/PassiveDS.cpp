@@ -7,17 +7,17 @@ namespace robot_controllers {
         void PassiveDS::SetParams(unsigned int dim, const std::vector<double>& eigvals)
         {
             // Set input state dimension and eigenvalues set
-            state_.num_eigval_ = eigvals.size();
-            state_.state_dim_ = dim;
+            params_.num_eigval_ = eigvals.size();
+            params_.params_dim_ = dim;
 
             // Fill the eigenvalue matrix
-            state_.eig_matrix_ = Eigen::MatrixXd::Zero(dim, dim);
+            params_.eig_matrix_ = Eigen::MatrixXd::Zero(dim, dim);
 
             for (size_t i = 0; i < eigvals.size(); i++)
-                state_.eig_matrix_(i, i) = eigvals[i];
+                params_.eig_matrix_(i, i) = eigvals[i];
 
-            for (size_t i = state_.num_eigval_; i < dim; i++)
-                state_.eig_matrix_(i, i) = eigvals.back();
+            for (size_t i = params_.num_eigval_; i < dim; i++)
+                params_.eig_matrix_(i, i) = eigvals.back();
 
             Init();
         }
@@ -25,73 +25,71 @@ namespace robot_controllers {
         bool PassiveDS::Init()
         {
             // Initialize the basis matrix
-            state_.basis_matrix_ = Eigen::MatrixXd::Random(state_.state_dim_, state_.state_dim_);
+            params_.basis_matrix_ = Eigen::MatrixXd::Random(params_.params_dim_, params_.params_dim_);
             Orthonormalize();
             AssertOrthonormalize();
 
             // Initialize the damping matrix
-            state_.damping_matrix_ = Eigen::MatrixXd::Zero(state_.state_dim_, state_.state_dim_);
+            params_.damping_matrix_ = Eigen::MatrixXd::Zero(params_.params_dim_, params_.params_dim_);
 
             return true;
         }
 
-        void PassiveDS::SetInput(const Eigen::VectorXd& current, const Eigen::VectorXd& desired)
+        void PassiveDS::SetDesired(const Eigen::VectorXd& velocity)
         {
-            input_.current_velocity_ = current;
-            input_.desired_velocity_ = desired;
-            Update();
+            input_.desired_.velocity_ = velocity;
         }
 
         void PassiveDS::AddEigval(double T)
         {
-            state_.eig_matrix_(state_.num_eigval_, state_.num_eigval_) = T;
-            state_.num_eigval_++;
+            params_.eig_matrix_(params_.num_eigval_, params_.num_eigval_) = T;
+            params_.num_eigval_++;
         }
 
         void PassiveDS::Orthonormalize()
         {
-            assert(state_.basis_matrix_.rows() == state_.basis_matrix_.cols());
-            unsigned int dim = state_.basis_matrix_.rows();
-            state_.basis_matrix_.col(0).normalize();
+            assert(params_.basis_matrix_.rows() == params_.basis_matrix_.cols());
+            unsigned int dim = params_.basis_matrix_.rows();
+            params_.basis_matrix_.col(0).normalize();
             for (unsigned int i = 1; i < dim; i++) {
                 for (unsigned int j = 0; j < i; j++)
-                    state_.basis_matrix_.col(i) -= state_.basis_matrix_.col(j).dot(state_.basis_matrix_.col(i)) * state_.basis_matrix_.col(j);
-                state_.basis_matrix_.col(i).normalize();
+                    params_.basis_matrix_.col(i) -= params_.basis_matrix_.col(j).dot(params_.basis_matrix_.col(i)) * params_.basis_matrix_.col(j);
+                params_.basis_matrix_.col(i).normalize();
             }
         }
 
         void PassiveDS::AssertOrthonormalize()
         {
-            uint dim = state_.basis_matrix_.cols();
+            uint dim = params_.basis_matrix_.cols();
             for (int i = 0; i < dim; ++i) {
-                assert(abs(state_.basis_matrix_.col(i).norm() - 1.0) < FLOATEQUAL);
+                assert(abs(params_.basis_matrix_.col(i).norm() - 1.0) < FLOATEQUAL);
                 for (int j = 0; j < i; ++j) {
-                    assert(abs(state_.basis_matrix_.col(i).dot(state_.basis_matrix_.col(j))) < FLOATEQUAL);
+                    assert(abs(params_.basis_matrix_.col(i).dot(params_.basis_matrix_.col(j))) < FLOATEQUAL);
                 }
             }
         }
 
         void PassiveDS::ComputeOrthonormalBasis()
         {
-            Eigen::VectorXd dir = input_.desired_velocity_.normalized(); // or normalize
-            assert(dir.rows() == state_.basis_matrix_.rows());
-            state_.basis_matrix_.col(0) = dir;
+            Eigen::VectorXd dir = input_.desired_.velocity_.normalized(); // or normalize
+            assert(dir.rows() == params_.basis_matrix_.rows());
+            params_.basis_matrix_.col(0) = dir;
             Orthonormalize();
         }
 
         void PassiveDS::ComputeDamping()
         {
             // only proceed of we have a minimum velocity norm!
-            if (input_.desired_velocity_.norm() > MINSPEED)
+            if (input_.desired_.velocity_.norm() > MINSPEED)
                 ComputeOrthonormalBasis();
             // otherwise just use the last computed basis
-            state_.damping_matrix_ = state_.basis_matrix_ * state_.eig_matrix_ * state_.basis_matrix_.transpose();
+            params_.damping_matrix_ = params_.basis_matrix_ * params_.eig_matrix_ * params_.basis_matrix_.transpose();
         }
 
-        void PassiveDS::Update()
+        void PassiveDS::Update(const RobotState& state)
         {
             ComputeDamping();
-            output_.effort_ = -state_.damping_matrix_ * input_.current_velocity_ + state_.eig_matrix_(0, 0) * input_.desired_velocity_;
+            output_.desired_.force_ = -params_.damping_matrix_ * state.velocity_ + params_.eig_matrix_(0, 0) * input_.desired_.velocity_;
         }
     } // namespace low
 } // namespace robot_controllers
