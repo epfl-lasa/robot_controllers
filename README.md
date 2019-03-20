@@ -17,7 +17,7 @@ This repo contains "low" and "high" level controllers for robotics control throu
 
 ### Installing
 
-- `mkdir build && cd buil`
+- `mkdir build && cd build`
 - `cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/install/dir/ ..`
 - `make && [sudo] make install` (you might need sudo depending on your installation directory)
 
