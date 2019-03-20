@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "PassiveDS.hpp"
+#include "robot_controllers/low/PassiveDS.hpp"
 
 namespace robot_controllers {
     namespace low {

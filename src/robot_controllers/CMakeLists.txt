@@ -11,6 +11,7 @@ set(robot_controllers_SOURCES
 
 set(low_level_controllers_SOURCES
     low/PassiveDS.cpp
+    low/Pid.cpp
 )
 
 set(high_level_controllers_SOURCES

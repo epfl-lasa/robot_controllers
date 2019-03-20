@@ -1,10 +1,7 @@
 #ifndef ROBOT_CONTROLLERS_LOW_PASSIVE_DS_HPP
 #define ROBOT_CONTROLLERS_LOW_PASSIVE_DS_HPP
 
-#include <Eigen/Core>
-
 #include <vector>
-
 #include <robot_controllers/AbstractController.hpp>
 
 namespace robot_controllers {

@@ -1,6 +1,8 @@
 #ifndef ROBOT_CONTROLLERS_ABSTRACT_CONTROLLER_HPP
 #define ROBOT_CONTROLLERS_ABSTRACT_CONTROLLER_HPP
 
+#include <Eigen/Core>
+
 namespace robot_controllers {
     enum class IOType : unsigned int {
         Position = 1 << 0, // Contains position information

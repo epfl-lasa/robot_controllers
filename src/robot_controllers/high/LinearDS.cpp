@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "LinearDS.hpp"
+#include "robot_controllers/high/LinearDS.hpp"
 
 namespace robot_controllers {
     namespace high {

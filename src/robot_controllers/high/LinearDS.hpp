@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-#include <robot_controllers/AbstractController.hpp>
+#include "robot_controllers/AbstractController.hpp"
 
 namespace robot_controllers {
     namespace high {
