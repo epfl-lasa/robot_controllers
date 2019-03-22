@@ -3,6 +3,8 @@
 
 #include <Eigen/Core>
 
+#include <Corrade/Containers/EnumSet.h>
+
 namespace robot_controllers {
     enum class IOType : unsigned int {
         Position = 1 << 0, // Contains position information
@@ -12,62 +14,9 @@ namespace robot_controllers {
         All = Position | Velocity | Acceleration | Force // Contains everything
     }; // enum class IOTypes
 
-    struct IOTypes {
-        using Type = std::underlying_type<IOType>::type;
+    using IOTypes = Corrade::Containers::EnumSet<IOType>;
 
-        Type value;
-
-        IOTypes(IOType val) : value(static_cast<Type>(val)) {}
-        IOTypes(Type val) : value(val) {}
-
-        bool operator==(IOTypes other) const
-        {
-            return (value == other.value);
-        }
-
-        bool operator!=(IOTypes other) const
-        {
-            return (value != other.value);
-        }
-
-        IOTypes operator|(IOTypes other) const
-        {
-            return IOTypes(value | other.value);
-        }
-
-        IOTypes& operator|=(IOTypes other)
-        {
-            value |= other.value;
-            return *this;
-        }
-
-        IOTypes operator&(IOTypes other) const
-        {
-            return IOTypes(value & other.value);
-        }
-
-        IOTypes& operator&=(IOTypes other)
-        {
-            value &= other.value;
-            return *this;
-        }
-
-        IOTypes operator^(IOTypes other) const
-        {
-            return IOTypes(value ^ other.value);
-        }
-
-        IOTypes& operator^=(IOTypes other)
-        {
-            value ^= other.value;
-            return *this;
-        }
-
-        operator bool() const
-        {
-            return value != 0;
-        }
-    }; // struct IOTypes
+    CORRADE_ENUMSET_OPERATORS(IOTypes)
 
     struct RobotState {
         Eigen::VectorXd position_,
@@ -77,7 +26,7 @@ namespace robot_controllers {
     };
 
     struct RobotIO {
-        RobotIO(IOType type) : type_(type) {}
+        RobotIO(IOTypes type) : type_(type) {}
 
         RobotState desired_;
 
@@ -87,7 +36,7 @@ namespace robot_controllers {
 
     class AbstractController {
     public:
-        AbstractController(IOType input_type, IOType output_type) : input_(input_type), output_(output_type) {}
+        AbstractController(IOTypes input_type, IOTypes output_type) : input_(input_type), output_(output_type) {}
         virtual ~AbstractController() {}
 
         virtual bool Init() = 0;

@@ -22,7 +22,10 @@ add_library(RobotControllers SHARED ${robot_controllers_SOURCES} ${low_level_con
 
 target_include_directories(RobotControllers PUBLIC
     ${PROJECT_SOURCE_DIR}/src
-    ${EIGEN3_INCLUDE_DIRS})
+    ${EIGEN3_INCLUDE_DIRS}
+    $<TARGET_PROPERTY:Corrade::Utility,INTERFACE_INCLUDE_DIRECTORIES>)
+
+target_link_libraries(RobotControllers PUBLIC Corrade::Utility)
 
 # Require C++11
 set_property(TARGET RobotControllers PROPERTY CXX_STANDARD 11)

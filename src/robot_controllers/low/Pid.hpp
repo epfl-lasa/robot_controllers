@@ -17,7 +17,7 @@ namespace robot_controllers {
 
         class Pid : public AbstractController {
         public:
-            Pid(const unsigned int input_dim, const unsigned int output_dim, const double time_step) : AbstractController(IOType(static_cast<unsigned int>(IOType::Position) | static_cast<unsigned int>(IOType::Velocity)), IOType::Force)
+            Pid(const unsigned int input_dim, const unsigned int output_dim, const double time_step) : AbstractController(IOType::Position | IOType::Velocity, IOType::Force)
             {
                 params_.input_dim_ = input_dim;
                 params_.output_dim_ = output_dim;

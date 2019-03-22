@@ -11,7 +11,7 @@
 namespace robot_controllers {
     class CascadeController : public AbstractController {
     public:
-        CascadeController(IOType input_type, IOType output_type) : AbstractController(input_type, output_type) {}
+        CascadeController(IOTypes input_type, IOTypes output_type) : AbstractController(input_type, output_type) {}
         ~CascadeController() {}
 
         bool Init() override;
