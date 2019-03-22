@@ -4,6 +4,25 @@
 
 namespace robot_controllers {
     namespace low {
+        bool PassiveDS::Init()
+        {
+            // Initialize the basis matrix
+            params_.basis_matrix_ = Eigen::MatrixXd::Random(params_.params_dim_, params_.params_dim_);
+            Orthonormalize();
+            AssertOrthonormalize();
+
+            // Initialize the damping matrix
+            params_.damping_matrix_ = Eigen::MatrixXd::Zero(params_.params_dim_, params_.params_dim_);
+
+            return true;
+        }
+
+        void PassiveDS::Update(const RobotState& state)
+        {
+            ComputeDamping();
+            output_.desired_.force_ = -params_.damping_matrix_ * state.velocity_ + params_.eig_matrix_(0, 0) * input_.desired_.velocity_;
+        }
+
         void PassiveDS::SetParams(unsigned int dim, const std::vector<double>& eigvals)
         {
             // Set input state dimension and eigenvalues set
@@ -20,24 +39,6 @@ namespace robot_controllers {
                 params_.eig_matrix_(i, i) = eigvals.back();
 
             Init();
-        }
-
-        bool PassiveDS::Init()
-        {
-            // Initialize the basis matrix
-            params_.basis_matrix_ = Eigen::MatrixXd::Random(params_.params_dim_, params_.params_dim_);
-            Orthonormalize();
-            AssertOrthonormalize();
-
-            // Initialize the damping matrix
-            params_.damping_matrix_ = Eigen::MatrixXd::Zero(params_.params_dim_, params_.params_dim_);
-
-            return true;
-        }
-
-        void PassiveDS::SetDesired(const Eigen::VectorXd& velocity)
-        {
-            input_.desired_.velocity_ = velocity;
         }
 
         void PassiveDS::AddEigval(double T)
@@ -86,10 +87,6 @@ namespace robot_controllers {
             params_.damping_matrix_ = params_.basis_matrix_ * params_.eig_matrix_ * params_.basis_matrix_.transpose();
         }
 
-        void PassiveDS::Update(const RobotState& state)
-        {
-            ComputeDamping();
-            output_.desired_.force_ = -params_.damping_matrix_ * state.velocity_ + params_.eig_matrix_(0, 0) * input_.desired_.velocity_;
-        }
     } // namespace low
+
 } // namespace robot_controllers

@@ -7,12 +7,23 @@
 namespace robot_controllers {
     namespace low {
         struct ParamsPid {
-            Eigen::MatrixXd gain_matrix_;
+            Eigen::MatrixXd p_matrix_,
+                d_matrix_,
+                i_matrix_;
+            unsigned int input_dim_,
+                output_dim_;
+            double time_step_;
         };
 
         class Pid : public AbstractController {
         public:
-            Pid() : AbstractController(IOType::Velocity, IOType::Force) {}
+            Pid(const unsigned int input_dim, const unsigned int output_dim, const double time_step) : AbstractController(IOType(static_cast<unsigned int>(IOType::Position) | static_cast<unsigned int>(IOType::Velocity)), IOType::Force)
+            {
+                params_.input_dim_ = input_dim;
+                params_.output_dim_ = output_dim;
+                params_.time_step_ = time_step;
+                Init();
+            }
 
             ~Pid() {}
 
@@ -20,12 +31,15 @@ namespace robot_controllers {
 
             void Update(const RobotState& state) override;
 
-            void SetParams(const Eigen::MatrixXd& gain_matrix);
+            void SetParams(const Eigen::MatrixXd& p_matrix, const Eigen::MatrixXd& d_matrix, const Eigen::MatrixXd& i_matrix);
 
-            void SetDesired(const RobotState& state);
+            // SetInput  -> Inherited from AbstractController
+            // GetInput  -> Inherited from AbstractController
+            // GetOutput -> Inherited from AbstractController
 
         protected:
             ParamsPid params_;
+            RobotState curr_state_;
         };
 
     } // namespace low

@@ -10,7 +10,7 @@ namespace robot_controllers {
         Acceleration = 1 << 2, // Contains acceleration information
         Force = 1 << 3, // Contains force information
         All = Position | Velocity | Acceleration | Force // Contains everything
-    };
+    }; // enum class IOTypes
 
     struct IOTypes {
         using Type = std::underlying_type<IOType>::type;
@@ -67,7 +67,7 @@ namespace robot_controllers {
         {
             return value != 0;
         }
-    };
+    }; // struct IOTypes
 
     struct RobotState {
         Eigen::VectorXd position_,
@@ -83,12 +83,12 @@ namespace robot_controllers {
 
         // this should never change
         const IOTypes type_;
-    };
+    }; // struct RobotIO
 
     class AbstractController {
     public:
         AbstractController(IOType input_type, IOType output_type) : input_(input_type), output_(output_type) {}
-        ~AbstractController() {}
+        virtual ~AbstractController() {}
 
         virtual bool Init() = 0;
         virtual void Update(const RobotState&) = 0;
@@ -101,7 +101,7 @@ namespace robot_controllers {
     protected:
         RobotIO input_;
         RobotIO output_;
-    };
+    }; // class AbstractController
 
 } // namespace robot_controllers
 

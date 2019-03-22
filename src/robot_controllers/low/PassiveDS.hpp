@@ -1,8 +1,8 @@
 #ifndef ROBOT_CONTROLLERS_LOW_PASSIVE_DS_HPP
 #define ROBOT_CONTROLLERS_LOW_PASSIVE_DS_HPP
 
-#include <vector>
 #include <robot_controllers/AbstractController.hpp>
+#include <vector>
 
 namespace robot_controllers {
     namespace low {
@@ -45,11 +45,13 @@ namespace robot_controllers {
 
             bool Init() override;
 
-            void SetParams(unsigned int dim, const std::vector<double>& eigvals);
-
             void Update(const RobotState& state) override;
 
-            void SetDesired(const Eigen::VectorXd& velocity);
+            void SetParams(unsigned int dim, const std::vector<double>& eigvals);
+
+            // SetInput  -> Inherited from AbstractController
+            // GetInput  -> Inherited from AbstractController
+            // GetOutput -> Inherited from AbstractController
 
         protected:
             ParamsPassiveDS params_;
