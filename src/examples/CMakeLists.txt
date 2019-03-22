@@ -6,4 +6,5 @@ set_property(TARGET linear_test PROPERTY CXX_STANDARD_REQUIRED ON)
 
 target_link_libraries(linear_test
   RobotControllers
+  # PassiveDSController
 )

@@ -49,15 +49,21 @@ namespace robot_controllers {
 
     bool SumController::CheckConsistency() const
     {
-        IOTypes it = input_.type_;
-        IOTypes ot = output_.type_;
+        if (controllers_.size() == 0)
+            return true;
+
+        auto& c = controllers_[0];
+        IOTypes it = c->GetInput().type_;
+        IOTypes ot = c->GetOutput().type_;
         for (auto& ctrl : controllers_) {
-            if (ctrl->GetInput().type_ != it)
+            if (!(ctrl->GetInput().type_ & it))
                 return false;
-            if (ctrl->GetOutput().type_ != ot)
+            if (!(ctrl->GetOutput().type_ & ot))
                 return false;
         }
 
         return true;
     }
 } // namespace robot_controllers
+
+CORRADE_PLUGIN_REGISTER(SumController, robot_controllers::SumController, "RobotControllers.AbstractController/1.0")

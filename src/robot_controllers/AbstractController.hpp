@@ -3,7 +3,11 @@
 
 #include <Eigen/Core>
 
+#include <string>
+#include <vector>
+
 #include <Corrade/Containers/EnumSet.h>
+#include <Corrade/PluginManager/AbstractManagingPlugin.h>
 
 namespace robot_controllers {
     enum class IOType : unsigned int {
@@ -15,7 +19,6 @@ namespace robot_controllers {
     }; // enum class IOTypes
 
     using IOTypes = Corrade::Containers::EnumSet<IOType>;
-
     CORRADE_ENUMSET_OPERATORS(IOTypes)
 
     struct RobotState {
@@ -26,26 +29,33 @@ namespace robot_controllers {
     };
 
     struct RobotIO {
+        RobotIO() {}
         RobotIO(IOTypes type) : type_(type) {}
 
         RobotState desired_;
 
         // this should never change
-        const IOTypes type_;
+        IOTypes type_;
     }; // struct RobotIO
 
-    class AbstractController {
+    class AbstractController : public Corrade::PluginManager::AbstractManagingPlugin<AbstractController> {
     public:
+        explicit AbstractController(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : Corrade::PluginManager::AbstractManagingPlugin<AbstractController>{manager, plugin} {}
+
+        AbstractController() {}
         AbstractController(IOTypes input_type, IOTypes output_type) : input_(input_type), output_(output_type) {}
         virtual ~AbstractController() {}
 
         virtual bool Init() = 0;
         virtual void Update(const RobotState&) = 0;
 
-        void SetInput(const RobotState& input) { input_.desired_ = input; }
+        void SetInput(const RobotState& input);
+        RobotIO GetInput();
+        RobotIO GetOutput();
 
-        RobotIO GetInput() { return input_; }
-        RobotIO GetOutput() { return output_; }
+        // Corrade Plugin Methods
+        static std::string pluginInterface();
+        static std::vector<std::string> pluginSearchPaths();
 
     protected:
         RobotIO input_;

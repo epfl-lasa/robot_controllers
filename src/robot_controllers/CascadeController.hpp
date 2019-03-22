@@ -11,7 +11,9 @@
 namespace robot_controllers {
     class CascadeController : public AbstractController {
     public:
-        CascadeController(IOTypes input_type, IOTypes output_type) : AbstractController(input_type, output_type) {}
+        explicit CascadeController(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin) {}
+
+        CascadeController() : AbstractController() {}
         ~CascadeController() {}
 
         bool Init() override;

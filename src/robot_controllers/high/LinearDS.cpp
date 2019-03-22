@@ -30,3 +30,5 @@ namespace robot_controllers {
         }
     } // namespace high
 } // namespace robot_controllers
+
+CORRADE_PLUGIN_REGISTER(LinearDSController, robot_controllers::high::LinearDS, "RobotControllers.AbstractController/1.0")

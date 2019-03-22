@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-#include "robot_controllers/AbstractController.hpp"
+#include <robot_controllers/AbstractController.hpp>
 
 namespace robot_controllers {
     namespace high {
@@ -15,6 +15,12 @@ namespace robot_controllers {
 
         class LinearDS : public AbstractController {
         public:
+            explicit LinearDS(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
+            {
+                input_.type_ = IOType::Position;
+                output_.type_ = IOType::Velocity;
+            }
+
             LinearDS() : AbstractController(IOType::Position, IOType::Velocity) {}
             LinearDS(Eigen::MatrixXd A, double dt = 0.001);
             ~LinearDS() {}

@@ -11,7 +11,8 @@
 namespace robot_controllers {
     class SumController : public AbstractController {
     public:
-        SumController(IOType input_type, IOType output_type) : AbstractController(input_type, output_type) {}
+        explicit SumController(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin) {}
+        SumController() : AbstractController() {}
         ~SumController() {}
 
         bool Init() override;

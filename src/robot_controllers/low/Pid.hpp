@@ -1,7 +1,7 @@
 #ifndef ROBOT_CONTROLLERS_LOW_PID_HPP
 #define ROBOT_CONTROLLERS_LOW_PID_HPP
 
-#include "robot_controllers/AbstractController.hpp"
+#include <robot_controllers/AbstractController.hpp>
 #include <vector>
 
 namespace robot_controllers {
@@ -17,6 +17,12 @@ namespace robot_controllers {
 
         class Pid : public AbstractController {
         public:
+            explicit Pid(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
+            {
+                input_.type_ = IOType::Position | IOType::Velocity;
+                output_.type_ = IOType::Force;
+            }
+
             Pid(const unsigned int input_dim, const unsigned int output_dim, const double time_step) : AbstractController(IOType::Position | IOType::Velocity, IOType::Force)
             {
                 params_.input_dim_ = input_dim;

@@ -90,3 +90,5 @@ namespace robot_controllers {
     } // namespace low
 
 } // namespace robot_controllers
+
+CORRADE_PLUGIN_REGISTER(PassiveDSController, robot_controllers::low::PassiveDS, "RobotControllers.AbstractController/1.0")

@@ -2,7 +2,6 @@
 
 namespace robot_controllers {
     namespace low {
-
         bool Pid::Init()
         {
             params_.p_matrix_ = Eigen::MatrixXd::Zero(params_.input_dim_, params_.output_dim_);
@@ -34,3 +33,5 @@ namespace robot_controllers {
 
     } // namespace low
 } // namespace robot_controllers
+
+CORRADE_PLUGIN_REGISTER(PidController, robot_controllers::low::Pid, "RobotControllers.AbstractController/1.0")

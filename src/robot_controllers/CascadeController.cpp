@@ -35,13 +35,18 @@ namespace robot_controllers {
 
     bool CascadeController::CheckConsistency() const
     {
-        IOTypes t = input_.type_;
+        IOTypes t = IOType::All;
         for (auto& ctrl : controllers_) {
-            if (ctrl->GetInput().type_ != t)
+            if (!(ctrl->GetInput().type_ & t))
                 return false;
             t = ctrl->GetOutput().type_;
         }
 
-        return (controllers_.back()->GetOutput().type_ == output_.type_);
+        if (controllers_.back()->GetOutput().type_ & output_.type_)
+            return true;
+
+        return false;
     }
 } // namespace robot_controllers
+
+CORRADE_PLUGIN_REGISTER(CascadeController, robot_controllers::CascadeController, "RobotControllers.AbstractController/1.0")

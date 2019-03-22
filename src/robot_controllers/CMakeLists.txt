@@ -2,30 +2,30 @@ set(robot_controllers_HEADERS
     AbstractController.hpp
     CascadeController.hpp
     SumController.hpp
+    ${CMAKE_CURRENT_BINARY_DIR}/Config.hpp
 )
 
 set(robot_controllers_SOURCES
+    AbstractController.cpp
     CascadeController.cpp
     SumController.cpp
 )
 
-set(low_level_controllers_SOURCES
-    low/PassiveDS.cpp
-    low/Pid.cpp
-)
+set(ROBOT_CONTROLLERS_PLUGINS_DIR ${CMAKE_INSTALL_PREFIX}/lib/RobotControllersPlugins)
 
-set(high_level_controllers_SOURCES
-    high/LinearDS.cpp
-)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/configure.h.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/Config.hpp)
 
-add_library(RobotControllers SHARED ${robot_controllers_SOURCES} ${low_level_controllers_SOURCES} ${high_level_controllers_SOURCES})
+add_library(RobotControllers SHARED ${robot_controllers_SOURCES})
 
 target_include_directories(RobotControllers PUBLIC
     ${PROJECT_SOURCE_DIR}/src
     ${EIGEN3_INCLUDE_DIRS}
-    $<TARGET_PROPERTY:Corrade::Utility,INTERFACE_INCLUDE_DIRECTORIES>)
+    $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>
+    PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/..)
 
-target_link_libraries(RobotControllers PUBLIC Corrade::Utility)
+target_link_libraries(RobotControllers PUBLIC Corrade::PluginManager)
 
 # Require C++11
 set_property(TARGET RobotControllers PROPERTY CXX_STANDARD 11)
