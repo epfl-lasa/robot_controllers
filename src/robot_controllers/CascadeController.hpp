@@ -34,7 +34,7 @@ namespace robot_controllers {
     protected:
         std::vector<std::unique_ptr<AbstractController>> controllers_;
 
-        bool CheckConsistency() const;
+        bool CheckConsistency();
     };
 
 } // namespace robot_controllers

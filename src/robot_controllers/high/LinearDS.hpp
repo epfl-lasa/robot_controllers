@@ -17,8 +17,8 @@ namespace robot_controllers {
         public:
             explicit LinearDS(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
             {
-                input_.type_ = IOType::Position;
-                output_.type_ = IOType::Velocity;
+                input_ = RobotIO(IOType::Position);
+                output_ = RobotIO(IOType::Velocity);
             }
 
             LinearDS() : AbstractController(IOType::Position, IOType::Velocity) {}

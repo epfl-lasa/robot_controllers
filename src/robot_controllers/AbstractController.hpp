@@ -29,11 +29,15 @@ namespace robot_controllers {
     };
 
     struct RobotIO {
+    public:
         RobotIO() {}
         RobotIO(IOTypes type) : type_(type) {}
 
+        IOTypes GetType() const { return type_; }
+
         RobotState desired_;
 
+    private:
         // this should never change
         IOTypes type_;
     }; // struct RobotIO

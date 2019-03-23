@@ -21,7 +21,7 @@ namespace robot_controllers {
             if (i == 0)
                 result = out;
             else {
-                IOTypes t = ctrl->GetOutput().type_;
+                IOTypes t = ctrl->GetOutput().GetType();
                 if (t & IOType::Position)
                     result.position_ += out.position_;
                 if (t & IOType::Velocity)
@@ -47,18 +47,20 @@ namespace robot_controllers {
         return controllers_[index].get();
     }
 
-    bool SumController::CheckConsistency() const
+    bool SumController::CheckConsistency()
     {
         if (controllers_.size() == 0)
             return true;
+        input_ = RobotIO(controllers_.front()->GetInput().GetType());
+        output_ = RobotIO(controllers_.back()->GetOutput().GetType());
 
         auto& c = controllers_[0];
-        IOTypes it = c->GetInput().type_;
-        IOTypes ot = c->GetOutput().type_;
+        IOTypes it = c->GetInput().GetType();
+        IOTypes ot = c->GetOutput().GetType();
         for (auto& ctrl : controllers_) {
-            if (!(ctrl->GetInput().type_ & it))
+            if (!(ctrl->GetInput().GetType() & it))
                 return false;
-            if (!(ctrl->GetOutput().type_ & ot))
+            if (!(ctrl->GetOutput().GetType() & ot))
                 return false;
         }
 

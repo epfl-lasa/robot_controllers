@@ -18,8 +18,8 @@ namespace robot_controllers {
         public:
             explicit PassiveDS(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
             {
-                input_.type_ = IOType::Velocity;
-                output_.type_ = IOType::Force;
+                input_ = RobotIO(IOType::Velocity);
+                output_ = RobotIO(IOType::Force);
             }
 
             PassiveDS() : AbstractController(IOType::Velocity, IOType::Force) {}
