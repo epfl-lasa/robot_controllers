@@ -7,6 +7,9 @@ namespace robot_controllers {
     RobotIO AbstractController::GetInput() { return input_; }
     RobotIO AbstractController::GetOutput() { return output_; }
 
+    void AbstractController::SetParams(const RobotParams& params) { params_ = params; }
+    RobotParams AbstractController::GetParams() { return params_; }
+
     std::string AbstractController::pluginInterface()
     {
         return "RobotControllers.AbstractController/1.0";
