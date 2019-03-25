@@ -17,6 +17,9 @@ target_include_directories(PidController PUBLIC
 set_property(TARGET PidController PROPERTY CXX_STANDARD 11)
 set_property(TARGET PidController PROPERTY CXX_STANDARD_REQUIRED ON)
 
+# Add SIMD
+add_simd(PidController)
+
 install(TARGETS PidController
     LIBRARY DESTINATION ${ROBOT_CONTROLLERS_PLUGINS_DIR})
 
@@ -32,6 +35,9 @@ target_include_directories(PassiveDSController PUBLIC
 # Require C++11
 set_property(TARGET PassiveDSController PROPERTY CXX_STANDARD 11)
 set_property(TARGET PassiveDSController PROPERTY CXX_STANDARD_REQUIRED ON)
+
+# Add SIMD
+add_simd(PassiveDSController)
 
 install(TARGETS PassiveDSController
     LIBRARY DESTINATION ${ROBOT_CONTROLLERS_PLUGINS_DIR})

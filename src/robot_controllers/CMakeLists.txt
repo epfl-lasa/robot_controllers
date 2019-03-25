@@ -31,6 +31,9 @@ target_link_libraries(RobotControllers PUBLIC Corrade::PluginManager)
 set_property(TARGET RobotControllers PROPERTY CXX_STANDARD 11)
 set_property(TARGET RobotControllers PROPERTY CXX_STANDARD_REQUIRED ON)
 
+# Add SIMD
+add_simd(RobotControllers)
+
 install(TARGETS RobotControllers
     RUNTIME DESTINATION ${ROBOT_CONTROLLERS_BINARY_INSTALL_DIR}
     LIBRARY DESTINATION ${ROBOT_CONTROLLERS_LIBRARY_INSTALL_DIR}

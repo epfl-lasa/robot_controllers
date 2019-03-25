@@ -16,6 +16,9 @@ target_include_directories(LinearDSController PUBLIC
 set_property(TARGET LinearDSController PROPERTY CXX_STANDARD 11)
 set_property(TARGET LinearDSController PROPERTY CXX_STANDARD_REQUIRED ON)
 
+# Add SIMD
+add_simd(LinearDSController)
+
 install(TARGETS LinearDSController
     LIBRARY DESTINATION ${ROBOT_CONTROLLERS_PLUGINS_DIR})
 
