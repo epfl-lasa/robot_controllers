@@ -19,6 +19,8 @@ namespace robot_controllers {
         bool Init() override;
         void Update(const RobotState& state) override;
 
+        void AddController(std::unique_ptr<AbstractController> controller);
+
         template <typename T, typename... Args>
         void AddController(Args... args)
         {

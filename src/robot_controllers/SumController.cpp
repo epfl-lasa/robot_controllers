@@ -35,6 +35,11 @@ namespace robot_controllers {
         output_.desired_ = result;
     }
 
+    void SumController::AddController(std::unique_ptr<AbstractController> controller)
+    {
+        controllers_.emplace_back(std::move(controller));
+    }
+
     AbstractController* SumController::GetController(unsigned int index)
     {
         assert(index < controllers_.size());

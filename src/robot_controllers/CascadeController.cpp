@@ -21,6 +21,11 @@ namespace robot_controllers {
         output_.desired_ = curr;
     }
 
+    void CascadeController::AddController(std::unique_ptr<AbstractController> controller)
+    {
+        controllers_.emplace_back(std::move(controller));
+    }
+
     AbstractController* CascadeController::GetController(unsigned int index)
     {
         assert(index < controllers_.size());

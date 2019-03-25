@@ -9,8 +9,38 @@ namespace robot_controllers {
     namespace high {
         struct ParamsLinearDS {
             Eigen::MatrixXd A_;
-            unsigned int dim_;
-            double dt_;
+            double time_step_;
+
+            RobotParams ToRobotParams() const
+            {
+                RobotParams p;
+
+                p.input_dim_ = A_.rows();
+                p.output_dim_ = A_.cols();
+                p.time_step_ = time_step_;
+
+                unsigned int size = A_.size();
+
+                if (size > 0) {
+                    p.values_.resize(size);
+
+                    Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_) = A_;
+                }
+
+                return p;
+            }
+
+            void FromRobotParams(const RobotParams& p)
+            {
+                if (p.input_dim_ == 0 || p.output_dim_ == 0)
+                    return;
+
+                time_step_ = p.time_step_;
+
+                A_.resize(p.input_dim_, p.output_dim_);
+
+                A_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
+            }
         };
 
         class LinearDS : public AbstractController {
@@ -18,20 +48,19 @@ namespace robot_controllers {
             explicit LinearDS(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
             {
                 input_ = RobotIO(IOType::Position);
-                output_ = RobotIO(IOType::Velocity);
+                output_ = RobotIO(IOType::Velocity | IOType::Position);
             }
 
-            LinearDS() : AbstractController(IOType::Position, IOType::Velocity) {}
-            LinearDS(Eigen::MatrixXd A, double dt = 0.001);
+            LinearDS() : AbstractController(IOType::Position, IOType::Velocity | IOType::Position) {}
             ~LinearDS() {}
 
             bool Init() override;
             void Update(const RobotState& state) override;
 
-            void SetDesired(const Eigen::VectorXd& position);
+            void SetParams(const ParamsLinearDS& params);
 
         protected:
-            ParamsLinearDS params_;
+            ParamsLinearDS linear_ds_params_;
         };
     } // namespace high
 } // namespace robot_controllers

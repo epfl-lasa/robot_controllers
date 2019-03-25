@@ -10,8 +10,42 @@ namespace robot_controllers {
             Eigen::MatrixXd damping_matrix_,
                 basis_matrix_,
                 eig_matrix_;
-            int params_dim_,
-                num_eigval_;
+
+            RobotParams ToRobotParams() const
+            {
+                assert(damping_matrix_.size() == basis_matrix_.size() && damping_matrix_.size() == eig_matrix_.size());
+                RobotParams p;
+
+                p.input_dim_ = damping_matrix_.rows();
+                p.output_dim_ = damping_matrix_.cols();
+                p.time_step_ = -1.; // we do not care about the time-step
+
+                unsigned int size = damping_matrix_.size() + basis_matrix_.size() + eig_matrix_.size();
+
+                if (size > 0) {
+                    p.values_.resize(size);
+
+                    Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_) = damping_matrix_;
+                    Eigen::MatrixXd::Map(p.values_.data() + damping_matrix_.size(), p.input_dim_, p.output_dim_) = basis_matrix_;
+                    Eigen::MatrixXd::Map(p.values_.data() + damping_matrix_.size() + basis_matrix_.size(), p.input_dim_, p.output_dim_) = eig_matrix_;
+                }
+
+                return p;
+            }
+
+            void FromRobotParams(const RobotParams& p)
+            {
+                if (p.input_dim_ == 0 || p.output_dim_ == 0 || p.input_dim_ != p.output_dim_)
+                    return;
+
+                damping_matrix_.resize(p.input_dim_, p.output_dim_);
+                basis_matrix_.resize(p.input_dim_, p.output_dim_);
+                eig_matrix_.resize(p.input_dim_, p.output_dim_);
+
+                damping_matrix_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
+                basis_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + damping_matrix_.size(), p.input_dim_, p.output_dim_);
+                eig_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + damping_matrix_.size() + basis_matrix_.size(), p.input_dim_, p.output_dim_);
+            }
         };
 
         class PassiveDS : public AbstractController {
@@ -25,52 +59,19 @@ namespace robot_controllers {
             PassiveDS() : AbstractController(IOType::Velocity, IOType::Force) {}
             ~PassiveDS() {}
 
-            template <typename... Args>
-            PassiveDS(unsigned int dim, Args... args) : AbstractController(IOType::Velocity, IOType::Force)
-            {
-                // Set input state dimension and eigenvalues set
-                params_.num_eigval_ = 0;
-                params_.params_dim_ = dim;
-
-                // Fill the eigenvalue matrix
-                params_.eig_matrix_ = Eigen::MatrixXd::Zero(dim, dim);
-
-                AddEigval(args...);
-
-                for (size_t i = params_.num_eigval_; i < dim; i++)
-                    params_.eig_matrix_(i, i) = params_.eig_matrix_(params_.num_eigval_ - 1, params_.num_eigval_ - 1);
-
-                // Initialize the basis matrix
-                params_.basis_matrix_ = Eigen::MatrixXd::Random(dim, dim);
-                Orthonormalize();
-                AssertOrthonormalize();
-
-                // Initialize the damping matrix
-                params_.damping_matrix_ = Eigen::MatrixXd::Zero(dim, dim);
-            }
-
             bool Init() override;
 
             void Update(const RobotState& state) override;
 
             void SetParams(unsigned int dim, const std::vector<double>& eigvals);
+            void SetParams(const ParamsPassiveDS& params);
 
             // SetInput  -> Inherited from AbstractController
             // GetInput  -> Inherited from AbstractController
             // GetOutput -> Inherited from AbstractController
 
         protected:
-            ParamsPassiveDS params_;
-
-            template <typename... Args>
-            void AddEigval(double T, Args... args)
-            {
-                params_.eig_matrix_(params_.num_eigval_, params_.num_eigval_) = T;
-                params_.num_eigval_++;
-                AddEigval(args...);
-            }
-
-            void AddEigval(double T);
+            ParamsPassiveDS passive_ds_params_;
 
             void Orthonormalize();
 

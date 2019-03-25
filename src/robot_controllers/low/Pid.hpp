@@ -10,9 +10,45 @@ namespace robot_controllers {
             Eigen::MatrixXd p_matrix_,
                 d_matrix_,
                 i_matrix_;
-            unsigned int input_dim_,
-                output_dim_;
             double time_step_;
+
+            RobotParams ToRobotParams() const
+            {
+                assert(p_matrix_.size() == d_matrix_.size() && p_matrix_.size() == i_matrix_.size());
+                RobotParams p;
+
+                p.input_dim_ = p_matrix_.rows();
+                p.output_dim_ = p_matrix_.cols();
+                p.time_step_ = time_step_;
+
+                unsigned int size = p_matrix_.size() + d_matrix_.size() + i_matrix_.size();
+
+                if (size > 0) {
+                    p.values_.resize(size);
+
+                    Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_) = p_matrix_;
+                    Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size(), p.input_dim_, p.output_dim_) = d_matrix_;
+                    Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size() + d_matrix_.size(), p.input_dim_, p.output_dim_) = i_matrix_;
+                }
+
+                return p;
+            }
+
+            void FromRobotParams(const RobotParams& p)
+            {
+                if (p.input_dim_ == 0 || p.output_dim_ == 0)
+                    return;
+
+                time_step_ = p.time_step_;
+
+                p_matrix_.resize(p.input_dim_, p.output_dim_);
+                d_matrix_.resize(p.input_dim_, p.output_dim_);
+                i_matrix_.resize(p.input_dim_, p.output_dim_);
+
+                p_matrix_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
+                d_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size(), p.input_dim_, p.output_dim_);
+                i_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size() + d_matrix_.size(), p.input_dim_, p.output_dim_);
+            }
         };
 
         class Pid : public AbstractController {
@@ -37,14 +73,15 @@ namespace robot_controllers {
 
             void Update(const RobotState& state) override;
 
-            void SetParams(const Eigen::MatrixXd& p_matrix, const Eigen::MatrixXd& d_matrix, const Eigen::MatrixXd& i_matrix);
+            void SetParams(const ParamsPid& params);
 
             // SetInput  -> Inherited from AbstractController
             // GetInput  -> Inherited from AbstractController
             // GetOutput -> Inherited from AbstractController
 
         protected:
-            ParamsPid params_;
+            // TO-DO: How can we remove double memory allocation
+            ParamsPid pid_params_;
             RobotState curr_state_;
         };
 

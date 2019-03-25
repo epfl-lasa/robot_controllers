@@ -56,6 +56,7 @@ namespace robot_controllers {
         AbstractController(IOTypes input_type, IOTypes output_type) : input_(input_type), output_(output_type) {}
         virtual ~AbstractController() {}
 
+        // Init should be called after SetParams
         virtual bool Init() = 0;
         virtual void Update(const RobotState&) = 0;
 
