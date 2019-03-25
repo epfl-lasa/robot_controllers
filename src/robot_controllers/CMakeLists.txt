@@ -20,7 +20,7 @@ add_library(RobotControllers SHARED ${robot_controllers_SOURCES})
 
 target_include_directories(RobotControllers PUBLIC
     ${PROJECT_SOURCE_DIR}/src
-    ${EIGEN3_INCLUDE_DIRS}
+    ${Eigen3_INCLUDE_DIRS}
     $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>
     PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/..)

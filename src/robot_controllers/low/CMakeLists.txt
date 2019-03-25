@@ -10,7 +10,7 @@ corrade_add_plugin(PidController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf Pid.c
 # Includes
 target_include_directories(PidController PUBLIC
     ${PROJECT_SOURCE_DIR}/src
-    ${EIGEN3_INCLUDE_DIRS}
+    ${Eigen3_INCLUDE_DIRS}
     $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>)
 
 # Require C++11
@@ -26,7 +26,7 @@ corrade_add_plugin(PassiveDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf
 # Includes
 target_include_directories(PassiveDSController PUBLIC
     ${PROJECT_SOURCE_DIR}/src
-    ${EIGEN3_INCLUDE_DIRS}
+    ${Eigen3_INCLUDE_DIRS}
     $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>)
 
 # Require C++11

@@ -9,7 +9,7 @@ corrade_add_plugin(LinearDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf 
 # Includes
 target_include_directories(LinearDSController PUBLIC
     ${PROJECT_SOURCE_DIR}/src
-    ${EIGEN3_INCLUDE_DIRS}
+    ${Eigen3_INCLUDE_DIRS}
     $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>)
 
 # Require C++11

@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.0)
 # Set the name of your project here
 project(robot_controllers)
 
-find_package (Eigen3 3.3 REQUIRED)
+find_package(PkgConfig)
+
+# Find RBDyn library and dependencies
+pkg_search_module(Eigen3 REQUIRED eigen3)
 
 # Find Corrade
 find_package(Corrade REQUIRED Utility PluginManager)
