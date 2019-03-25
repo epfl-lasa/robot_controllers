@@ -81,6 +81,7 @@ namespace robot_controllers {
 
         protected:
             // TO-DO: How can we remove double memory allocation
+            // Use Eigen::Map<Eigen::MatrixXd> instead of Eigen::MatrixXd
             ParamsPid pid_params_;
             RobotState curr_state_;
         };
