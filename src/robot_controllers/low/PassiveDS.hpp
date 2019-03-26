@@ -47,7 +47,7 @@ namespace robot_controllers {
 
             void Update(const RobotState& state) override;
 
-            void SetParams(unsigned int dim, const std::vector<double>& eigvals);
+            void SetParams(unsigned int dim, const std::vector<double>& eigvals, bool init = true);
 
             // SetInput  -> Inherited from AbstractController
             // GetInput  -> Inherited from AbstractController

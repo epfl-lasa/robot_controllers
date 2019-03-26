@@ -23,7 +23,7 @@ namespace robot_controllers {
             output_.desired_.force_ = -params_.damping_matrix_ * state.velocity_ + params_.eig_matrix_(0, 0) * input_.desired_.velocity_;
         }
 
-        void PassiveDS::SetParams(unsigned int dim, const std::vector<double>& eigvals)
+        void PassiveDS::SetParams(unsigned int dim, const std::vector<double>& eigvals, bool init)
         {
             // Set input state dimension and eigenvalues set
             params_.num_eigval_ = eigvals.size();
@@ -38,7 +38,10 @@ namespace robot_controllers {
             for (size_t i = params_.num_eigval_; i < dim; i++)
                 params_.eig_matrix_(i, i) = eigvals.back();
 
-            Init();
+            if(init)
+            {
+                Init();
+            }
         }
 
         void PassiveDS::AddEigval(double T)
