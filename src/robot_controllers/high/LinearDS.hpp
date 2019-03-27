@@ -11,46 +11,8 @@ namespace robot_controllers {
             Eigen::MatrixXd A_;
             double time_step_;
 
-            RobotParams ToRobotParams() const
-            {
-                RobotParams p;
-
-                p.input_dim_ = A_.rows();
-                p.output_dim_ = A_.cols();
-                p.time_step_ = time_step_;
-
-                unsigned int size = A_.size();
-
-                if (size > 0) {
-                    p.values_.resize(size);
-
-                    Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_) = A_;
-                }
-
-                return p;
-            }
-
-            void FromRobotParams(const RobotParams& p)
-            {
-                if (p.input_dim_ == 0 || p.output_dim_ == 0)
-                    return;
-
-                time_step_ = p.time_step_;
-
-                A_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
-
-                unsigned int size = p.values_.size();
-                // if only one element
-                if (size == 1) {
-                    A_.diagonal() = Eigen::VectorXd::Constant(p.input_dim_, p.values_[0]);
-                }
-                else if (size == p.input_dim_) { // diagonal elements
-                    A_.diagonal() = Eigen::VectorXd::Map(p.values_.data(), p.input_dim_);
-                }
-                else { // full matrix
-                    A_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
-                }
-            }
+            RobotParams ToRobotParams() const;
+            void FromRobotParams(const RobotParams& p);
         };
 
         class LinearDS : public AbstractController {
