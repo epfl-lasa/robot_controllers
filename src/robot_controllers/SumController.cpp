@@ -56,8 +56,16 @@ namespace robot_controllers {
     {
         if (controllers_.size() == 0)
             return true;
-        input_ = RobotIO(controllers_.front()->GetInput().GetType());
-        output_ = RobotIO(controllers_.back()->GetOutput().GetType());
+        IOTypes in_type = controllers_.front()->GetInput().GetType();
+        IOTypes out_type = controllers_.back()->GetOutput().GetType();
+
+        for (auto& ctrl : controllers_) {
+            in_type = in_type | ctrl->GetInput().GetType();
+            out_type = out_type | ctrl->GetOutput().GetType();
+        }
+
+        input_ = RobotIO(in_type);
+        output_ = RobotIO(out_type);
 
         auto& c = controllers_[0];
         IOTypes it = c->GetInput().GetType();
