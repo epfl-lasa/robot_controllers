@@ -17,7 +17,7 @@ namespace robot_controllers {
             if (size > 0) {
                 p.values_.resize(size);
 
-                Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_) = A_;
+                Eigen::MatrixXd::Map(p.values_.data(), p.output_dim_, p.input_dim_) = A_;
             }
 
             return p;
@@ -30,18 +30,18 @@ namespace robot_controllers {
 
             time_step_ = p.time_step_;
 
-            A_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
+            A_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
 
             unsigned int size = p.values_.size();
             // if only one element
             if (size == 1) {
-                A_.diagonal() = Eigen::VectorXd::Constant(p.input_dim_, p.values_[0]);
+                A_.diagonal() = Eigen::VectorXd::Constant(p.output_dim_, p.values_[0]);
             }
             else if (size == p.input_dim_) { // diagonal elements
-                A_.diagonal() = Eigen::VectorXd::Map(p.values_.data(), p.input_dim_);
+                A_.diagonal() = Eigen::VectorXd::Map(p.values_.data(), p.output_dim_);
             }
             else { // full matrix
-                A_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
+                A_ = Eigen::MatrixXd::Map(p.values_.data(), p.output_dim_, p.input_dim_);
             }
         }
 

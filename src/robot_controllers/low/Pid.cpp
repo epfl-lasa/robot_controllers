@@ -16,9 +16,9 @@ namespace robot_controllers {
             if (size > 0) {
                 p.values_.resize(size);
 
-                Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_) = p_matrix_;
-                Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size(), p.input_dim_, p.output_dim_) = d_matrix_;
-                Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size() + d_matrix_.size(), p.input_dim_, p.output_dim_) = i_matrix_;
+                Eigen::MatrixXd::Map(p.values_.data(), p.output_dim_, p.input_dim_) = p_matrix_;
+                Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size(), p.output_dim_, p.input_dim_) = d_matrix_;
+                Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size() + d_matrix_.size(), p.output_dim_, p.input_dim_) = i_matrix_;
             }
 
             return p;
@@ -31,39 +31,39 @@ namespace robot_controllers {
 
             time_step_ = p.time_step_;
 
-            p_matrix_.resize(p.input_dim_, p.output_dim_);
-            d_matrix_.resize(p.input_dim_, p.output_dim_);
-            i_matrix_.resize(p.input_dim_, p.output_dim_);
+            p_matrix_.resize(p.output_dim_, p.input_dim_);
+            d_matrix_.resize(p.output_dim_, p.input_dim_);
+            i_matrix_.resize(p.output_dim_, p.input_dim_);
 
             unsigned int size = p.values_.size();
             // <= 3 values: one for P, one for D, one for I (in that order)
             if (size <= 3) {
-                p_matrix_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
-                d_matrix_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
-                i_matrix_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
+                p_matrix_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
+                d_matrix_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
+                i_matrix_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
 
-                p_matrix_.diagonal() = Eigen::VectorXd::Constant(p.input_dim_, p.values_[0]);
-                d_matrix_.diagonal() = Eigen::VectorXd::Constant(p.input_dim_, p.values_[1]);
+                p_matrix_.diagonal() = Eigen::VectorXd::Constant(p.output_dim_, p.values_[0]);
+                d_matrix_.diagonal() = Eigen::VectorXd::Constant(p.output_dim_, p.values_[1]);
                 if (size == 3) {
-                    i_matrix_.diagonal() = Eigen::VectorXd::Constant(p.input_dim_, p.values_[2]);
+                    i_matrix_.diagonal() = Eigen::VectorXd::Constant(p.output_dim_, p.values_[2]);
                 }
             }
             // diagonal elements only: for P, for D and for I (in that order)
-            else if (size <= 3 * p.input_dim_) {
-                p_matrix_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
-                d_matrix_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
-                i_matrix_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
+            else if (size <= 3 * p.output_dim_) {
+                p_matrix_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
+                d_matrix_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
+                i_matrix_ = Eigen::MatrixXd::Zero(p.output_dim_, p.input_dim_);
 
-                p_matrix_.diagonal() = Eigen::VectorXd::Map(p.values_.data(), p.input_dim_);
-                d_matrix_.diagonal() = Eigen::VectorXd::Map(p.values_.data() + p.input_dim_, p.input_dim_);
-                if (size == 3 * p.input_dim_) {
-                    i_matrix_.diagonal() = Eigen::VectorXd::Map(p.values_.data() + 2 * p.input_dim_, p.input_dim_);
+                p_matrix_.diagonal() = Eigen::VectorXd::Map(p.values_.data(), p.output_dim_);
+                d_matrix_.diagonal() = Eigen::VectorXd::Map(p.values_.data() + p.output_dim_, p.output_dim_);
+                if (size == 3 * p.output_dim_) {
+                    i_matrix_.diagonal() = Eigen::VectorXd::Map(p.values_.data() + 2 * p.output_dim_, p.output_dim_);
                 }
             }
             else { // full matrices
-                p_matrix_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
-                d_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size(), p.input_dim_, p.output_dim_);
-                i_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size() + d_matrix_.size(), p.input_dim_, p.output_dim_);
+                p_matrix_ = Eigen::MatrixXd::Map(p.values_.data(), p.output_dim_, p.input_dim_);
+                d_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size(), p.output_dim_, p.input_dim_);
+                i_matrix_ = Eigen::MatrixXd::Map(p.values_.data() + p_matrix_.size() + d_matrix_.size(), p.output_dim_, p.input_dim_);
             }
         }
 
