@@ -37,9 +37,19 @@ namespace robot_controllers {
 
                 time_step_ = p.time_step_;
 
-                A_.resize(p.input_dim_, p.output_dim_);
+                A_ = Eigen::MatrixXd::Zero(p.input_dim_, p.output_dim_);
 
-                A_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
+                unsigned int size = p.values_.size();
+                // if only one element
+                if (size == 1) {
+                    A_.diagonal() = Eigen::VectorXd::Constant(p.input_dim_, p.values_[0]);
+                }
+                else if (size == p.input_dim_) { // diagonal elements
+                    A_.diagonal() = Eigen::VectorXd::Map(p.values_.data(), p.input_dim_);
+                }
+                else { // full matrix
+                    A_ = Eigen::MatrixXd::Map(p.values_.data(), p.input_dim_, p.output_dim_);
+                }
             }
         };
 
