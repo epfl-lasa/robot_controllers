@@ -27,6 +27,9 @@ namespace robot_controllers {
             ~LinearDS() {}
 
             bool Init() override;
+
+            void SetIOTypes(IOTypes input_type, IOTypes output_type) override {} // Do not allow changes in the IO types
+
             void Update(const RobotState& state) override;
 
             void SetParams(const ParamsLinearDS& params);

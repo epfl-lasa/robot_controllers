@@ -13,25 +13,30 @@ namespace robot_controllers {
     void SumController::Update(const RobotState& state)
     {
         RobotState result;
+#define add_result(name)                                          \
+    {                                                             \
+        if (result.name.size() == 0)                              \
+            result.name = Eigen::VectorXd::Zero(out.name.size()); \
+        result.name += out.name;                                  \
+    }
+
         for (unsigned int i = 0; i < controllers_.size(); i++) {
             auto& ctrl = controllers_[i];
             ctrl->SetInput(input_.desired_);
             ctrl->Update(state);
             RobotState out = ctrl->GetOutput().desired_;
-            if (i == 0)
-                result = out;
-            else {
-                IOTypes t = ctrl->GetOutput().GetType();
-                if (t & IOType::Position)
-                    result.position_ += out.position_;
-                if (t & IOType::Velocity)
-                    result.velocity_ += out.velocity_;
-                if (t & IOType::Acceleration)
-                    result.acceleration_ += out.acceleration_;
-                if (t & IOType::Force)
-                    result.force_ += out.force_;
-            }
+
+            IOTypes t = ctrl->GetOutput().GetType();
+            if (t & IOType::Position)
+                add_result(position_);
+            if (t & IOType::Velocity)
+                add_result(velocity_);
+            if (t & IOType::Acceleration)
+                add_result(acceleration_);
+            if (t & IOType::Force)
+                add_result(force_);
         }
+#undef add_result
         output_.desired_ = result;
     }
 
@@ -55,7 +60,7 @@ namespace robot_controllers {
     bool SumController::CheckConsistency()
     {
         if (controllers_.size() == 0)
-            return true;
+            return false;
         IOTypes in_type = controllers_.front()->GetInput().GetType();
         IOTypes out_type = controllers_.back()->GetOutput().GetType();
 
@@ -66,16 +71,6 @@ namespace robot_controllers {
 
         input_ = RobotIO(in_type);
         output_ = RobotIO(out_type);
-
-        auto& c = controllers_[0];
-        IOTypes it = c->GetInput().GetType();
-        IOTypes ot = c->GetOutput().GetType();
-        for (auto& ctrl : controllers_) {
-            if (!(ctrl->GetInput().GetType() & it))
-                return false;
-            if (!(ctrl->GetOutput().GetType() & ot))
-                return false;
-        }
 
         return true;
     }

@@ -19,6 +19,8 @@ namespace robot_controllers {
 
             bool Init() override;
 
+            void SetIOTypes(IOTypes input_type, IOTypes output_type) override {} // Do not allow changes in the IO types
+
             void Update(const RobotState& state) override;
 
             void SetParams(unsigned int dim, const std::vector<double>& eigvals);

@@ -1,4 +1,7 @@
 #include "robot_controllers/low/Pid.hpp"
+#include "robot_controllers/utils/math.hpp"
+
+#include <Eigen/Dense>
 
 namespace robot_controllers {
     namespace low {
@@ -69,22 +72,79 @@ namespace robot_controllers {
 
         bool Pid::Init()
         {
+            // sanity checks
+            // if we have position input, we need also velocity input and output needs to have force
+            if ((input_.GetType() & IOType::Position) && (!(input_.GetType() & IOType::Velocity) || !(output_.GetType() & IOType::Force)))
+                return false;
+            // if we have orientation input, we need also angular velocity input and output needs to have torque
+            if ((input_.GetType() & IOType::Orientation) && (!(input_.GetType() & IOType::AngularVelocity) || !(output_.GetType() & IOType::Torque)))
+                return false;
+
             pid_params_.FromRobotParams(params_);
-            curr_state_.position_ = Eigen::VectorXd::Zero(params_.input_dim_);
+
+            has_orientation_ = has_position_ = false;
+
+            if (input_.GetType() & IOType::Position)
+                has_position_ = true;
+            if (input_.GetType() & IOType::Orientation)
+                has_orientation_ = true;
+
+            dim_ = params_.input_dim_;
+
+            if (has_orientation_) {
+                // Orientation is always 3D
+                dim_ = params_.input_dim_ - 3;
+            }
+
+            if (has_orientation_ && (params_.input_dim_ < 3)) {
+                // if we have orientation, then dimension of positions/orientations should be 3
+                return false;
+            }
+
+            if (has_position_)
+                state_.position_ = Eigen::VectorXd::Zero(dim_);
+            if (has_orientation_) // TO-DO: Maybe not zero?
+                state_.orientation_ = Eigen::VectorXd::Zero(3);
+            intergral_error_ = Eigen::VectorXd::Zero(params_.input_dim_);
 
             return true;
         }
 
-        void Pid::Update(const RobotState& state)
+        void Pid::Update(const RobotState& curr_state)
         {
-            Eigen::VectorXd old_position(curr_state_.position_),
-                intergral_error = (state.position_ + old_position) * pid_params_.time_step_ / 2;
+            Eigen::VectorXd curr_pose = Eigen::VectorXd::Zero(params_.input_dim_);
+            if (has_position_)
+                curr_pose.tail(dim_) = curr_state.position_;
+            if (has_orientation_) // Orientation goes first
+                curr_pose.head(3) = curr_state.orientation_;
 
-            curr_state_ = state;
+            Eigen::VectorXd desired_pose = Eigen::VectorXd::Zero(params_.input_dim_);
+            if (has_position_)
+                desired_pose.tail(dim_) = input_.desired_.position_;
+            if (has_orientation_)
+                desired_pose.head(3) = input_.desired_.orientation_;
 
-            output_.desired_.force_ = -pid_params_.p_matrix_ * (state.position_ - input_.desired_.position_)
-                - pid_params_.d_matrix_ * (state.velocity_ - input_.desired_.velocity_)
-                - pid_params_.i_matrix_ * intergral_error;
+            Eigen::VectorXd error = desired_pose - curr_pose;
+            if (has_orientation_) {
+                Eigen::Matrix3d curr_rot = Eigen::AngleAxisd(curr_state.orientation_.norm(), curr_state.orientation_.normalized()).toRotationMatrix();
+                Eigen::Matrix3d desired_rot = Eigen::AngleAxisd(input_.desired_.orientation_.norm(), input_.desired_.orientation_.normalized()).toRotationMatrix();
+                desired_pose.head(3) = utils::rotation_error(desired_rot, curr_rot);
+            }
+
+            Eigen::VectorXd vel_error = Eigen::VectorXd::Zero(params_.input_dim_);
+            if (has_position_)
+                vel_error.tail(dim_) = input_.desired_.velocity_ - curr_state.velocity_;
+            if (has_orientation_)
+                vel_error.head(3) = input_.desired_.angular_velocity_ - curr_state.angular_velocity_;
+
+            intergral_error_.array() += error.array() * params_.time_step_; // TO-DO: What about the velocity error?
+
+            Eigen::VectorXd ft = pid_params_.p_matrix_ * error + pid_params_.d_matrix_ * vel_error + pid_params_.i_matrix_ * intergral_error_;
+
+            if (has_position_)
+                output_.desired_.force_ = ft.tail(dim_);
+            if (has_orientation_)
+                output_.desired_.torque_ = ft.head(3);
         }
 
         void Pid::SetParams(const ParamsPid& params)

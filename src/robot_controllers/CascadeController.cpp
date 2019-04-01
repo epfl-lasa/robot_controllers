@@ -41,7 +41,7 @@ namespace robot_controllers {
     bool CascadeController::CheckConsistency()
     {
         if (controllers_.size() == 0)
-            return true;
+            return false;
         input_ = RobotIO(controllers_.front()->GetInput().GetType());
         output_ = RobotIO(controllers_.back()->GetOutput().GetType());
 

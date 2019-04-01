@@ -29,7 +29,6 @@ namespace robot_controllers {
                 params_.input_dim_ = input_dim;
                 params_.output_dim_ = output_dim;
                 params_.time_step_ = time_step;
-                Init();
             }
 
             ~Pid() {}
@@ -40,15 +39,12 @@ namespace robot_controllers {
 
             void SetParams(const ParamsPid& params);
 
-            // SetInput  -> Inherited from AbstractController
-            // GetInput  -> Inherited from AbstractController
-            // GetOutput -> Inherited from AbstractController
-
         protected:
-            // TO-DO: How can we remove double memory allocation
-            // Use Eigen::Map<Eigen::MatrixXd> instead of Eigen::MatrixXd
             ParamsPid pid_params_;
-            RobotState curr_state_;
+            RobotState state_;
+            Eigen::VectorXd intergral_error_;
+            bool has_orientation_, has_position_;
+            unsigned int dim_;
         };
 
     } // namespace low

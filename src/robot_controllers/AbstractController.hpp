@@ -12,10 +12,14 @@
 namespace robot_controllers {
     enum class IOType : unsigned int {
         Position = 1 << 0, // Contains position information
-        Velocity = 1 << 1, // Contains velocity information
-        Acceleration = 1 << 2, // Contains acceleration information
-        Force = 1 << 3, // Contains force information
-        All = Position | Velocity | Acceleration | Force // Contains everything
+        Orientation = 1 << 1, // Contains orientation information
+        Velocity = 1 << 2, // Contains velocity information
+        AngularVelocity = 1 << 3, // Contains angular velocity information
+        Acceleration = 1 << 4, // Contains acceleration information
+        AngularAcceleration = 1 << 5, // Contains angular acceleration information
+        Force = 1 << 6, // Contains force information
+        Torque = 1 << 7, // Contains torque information
+        All = Position | Orientation | Velocity | AngularVelocity | Acceleration | AngularAcceleration | Force | Torque // Contains everything
     }; // enum class IOTypes
 
     using IOTypes = Corrade::Containers::EnumSet<IOType>;
@@ -26,6 +30,10 @@ namespace robot_controllers {
             velocity_,
             acceleration_,
             force_;
+        Eigen::VectorXd orientation_,
+            angular_velocity_,
+            angular_acceleration_,
+            torque_;
     };
 
     struct RobotIO {
@@ -61,6 +69,7 @@ namespace robot_controllers {
         virtual void Update(const RobotState&) = 0;
 
         void SetInput(const RobotState& input);
+        virtual void SetIOTypes(IOTypes input_type, IOTypes output_type);
         RobotIO GetInput();
         RobotIO GetOutput();
 

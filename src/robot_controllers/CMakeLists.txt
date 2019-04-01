@@ -2,6 +2,7 @@ set(robot_controllers_HEADERS
     AbstractController.hpp
     CascadeController.hpp
     SumController.hpp
+    utils/math.hpp
     ${CMAKE_CURRENT_BINARY_DIR}/Config.hpp
 )
 
@@ -9,6 +10,7 @@ set(robot_controllers_SOURCES
     AbstractController.cpp
     CascadeController.cpp
     SumController.cpp
+    utils/math.cpp
 )
 
 set(ROBOT_CONTROLLERS_PLUGINS_DIR ${CMAKE_INSTALL_PREFIX}/lib/RobotControllersPlugins)
