@@ -4,7 +4,7 @@ set(high_level_controllers_HEADERS
 )
 
 # Linear DS plugin
-corrade_add_plugin(LinearDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf LinearDS.cpp)
+corrade_add_plugin(LinearDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf LinearDS.cpp ${robot_controllers_utils_SOURCES})
 
 # Includes
 target_include_directories(LinearDSController PUBLIC
@@ -15,6 +15,8 @@ target_include_directories(LinearDSController PUBLIC
 # Require C++11
 set_property(TARGET LinearDSController PROPERTY CXX_STANDARD 11)
 set_property(TARGET LinearDSController PROPERTY CXX_STANDARD_REQUIRED ON)
+
+target_link_libraries(LinearDSController PUBLIC RobotControllers)
 
 # Add SIMD
 add_simd(LinearDSController)

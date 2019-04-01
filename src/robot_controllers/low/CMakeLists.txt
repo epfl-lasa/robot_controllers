@@ -5,7 +5,7 @@ set(low_level_controllers_HEADERS
 )
 
 # PID plugin
-corrade_add_plugin(PidController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf Pid.cpp)
+corrade_add_plugin(PidController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf Pid.cpp ${robot_controllers_utils_SOURCES})
 
 # Includes
 target_include_directories(PidController PUBLIC
@@ -17,6 +17,8 @@ target_include_directories(PidController PUBLIC
 set_property(TARGET PidController PROPERTY CXX_STANDARD 11)
 set_property(TARGET PidController PROPERTY CXX_STANDARD_REQUIRED ON)
 
+target_link_libraries(PidController PUBLIC RobotControllers)
+
 # Add SIMD
 add_simd(PidController)
 
@@ -24,7 +26,7 @@ install(TARGETS PidController
     LIBRARY DESTINATION ${ROBOT_CONTROLLERS_PLUGINS_DIR})
 
 # PassiveDS plugin
-corrade_add_plugin(PassiveDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf PassiveDS.cpp)
+corrade_add_plugin(PassiveDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf PassiveDS.cpp ${robot_controllers_utils_SOURCES})
 
 # Includes
 target_include_directories(PassiveDSController PUBLIC
@@ -35,6 +37,8 @@ target_include_directories(PassiveDSController PUBLIC
 # Require C++11
 set_property(TARGET PassiveDSController PROPERTY CXX_STANDARD 11)
 set_property(TARGET PassiveDSController PROPERTY CXX_STANDARD_REQUIRED ON)
+
+target_link_libraries(PassiveDSController PUBLIC RobotControllers)
 
 # Add SIMD
 add_simd(PassiveDSController)

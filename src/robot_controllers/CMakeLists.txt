@@ -2,7 +2,6 @@ set(robot_controllers_HEADERS
     AbstractController.hpp
     CascadeController.hpp
     SumController.hpp
-    utils/math.hpp
     ${CMAKE_CURRENT_BINARY_DIR}/Config.hpp
 )
 
@@ -10,7 +9,14 @@ set(robot_controllers_SOURCES
     AbstractController.cpp
     CascadeController.cpp
     SumController.cpp
-    utils/math.cpp
+)
+
+set(robot_controllers_utils_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils/math.hpp
+)
+
+set(robot_controllers_utils_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils/math.cpp
 )
 
 set(ROBOT_CONTROLLERS_PLUGINS_DIR ${CMAKE_INSTALL_PREFIX}/lib/RobotControllersPlugins)
@@ -18,7 +24,7 @@ set(ROBOT_CONTROLLERS_PLUGINS_DIR ${CMAKE_INSTALL_PREFIX}/lib/RobotControllersPl
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/configure.h.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/Config.hpp)
 
-add_library(RobotControllers SHARED ${robot_controllers_SOURCES})
+add_library(RobotControllers SHARED ${robot_controllers_SOURCES} ${robot_controllers_utils_SOURCES})
 
 target_include_directories(RobotControllers PUBLIC
     ${PROJECT_SOURCE_DIR}/src
@@ -42,6 +48,7 @@ install(TARGETS RobotControllers
     ARCHIVE DESTINATION ${ROBOT_CONTROLLERS_LIBRARY_INSTALL_DIR})
 
 install(FILES ${robot_controllers_HEADERS} DESTINATION ${ROBOT_CONTROLLERS_INCLUDE_INSTALL_DIR})
+install(FILES ${robot_controllers_utils_HEADERS} DESTINATION ${ROBOT_CONTROLLERS_INCLUDE_INSTALL_DIR}/utils)
 
 add_subdirectory(low)
 add_subdirectory(high)
