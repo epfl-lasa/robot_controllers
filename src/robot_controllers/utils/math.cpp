@@ -3,7 +3,7 @@
 #include <cmath>
 #include <limits>
 
-namespace robot_controlllers {
+namespace robot_controllers {
     namespace utils {
         // This is copied from: https://github.com/jrl-umi3218/SpaceVecAlg
         double sinc_inv(double x)
@@ -64,4 +64,4 @@ namespace robot_controlllers {
             return w;
         }
     } // namespace utils
-} // namespace robot_controlllers
+} // namespace robot_controllers
