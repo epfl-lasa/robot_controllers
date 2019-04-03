@@ -74,10 +74,10 @@ namespace robot_controllers {
         {
             // sanity checks
             // if we have position input, output needs to have force
-            if ((input_.GetType() & IOType::Position) || (input_.GetType() & IOType::Velocity) && !(output_.GetType() & IOType::Force))
+            if (((input_.GetType() & IOType::Position) || (input_.GetType() & IOType::Velocity)) && !(output_.GetType() & IOType::Force))
                 return false;
             // if we have orientation input, output needs to have torque
-            if ((input_.GetType() & IOType::Orientation) || (input_.GetType() & IOType::AngularVelocity) && !(output_.GetType() & IOType::Torque))
+            if (((input_.GetType() & IOType::Orientation) || (input_.GetType() & IOType::AngularVelocity)) && !(output_.GetType() & IOType::Torque))
                 return false;
 
             pid_params_.FromRobotParams(params_);
