@@ -29,12 +29,20 @@ namespace robot_controllers {
             IOTypes t = ctrl->GetOutput().GetType();
             if (t & IOType::Position)
                 add_result(position_);
+            if (t & IOType::Orientation)
+                add_result(orientation_);
             if (t & IOType::Velocity)
                 add_result(velocity_);
+            if (t & IOType::AngularVelocity)
+                add_result(angular_velocity_);
             if (t & IOType::Acceleration)
                 add_result(acceleration_);
+            if (t & IOType::AngularAcceleration)
+                add_result(angular_acceleration_);
             if (t & IOType::Force)
                 add_result(force_);
+            if (t & IOType::Torque)
+                add_result(torque_);
         }
 #undef add_result
         output_.desired_ = result;
