@@ -41,9 +41,8 @@ namespace robot_controllers {
 
         protected:
             ParamsPid pid_params_;
-            RobotState state_;
             Eigen::VectorXd intergral_error_;
-            bool has_orientation_, has_position_;
+            bool has_orientation_, has_position_, has_angular_velocity_, has_velocity_;
             unsigned int dim_;
         };
 

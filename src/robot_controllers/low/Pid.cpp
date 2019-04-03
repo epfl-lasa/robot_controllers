@@ -73,38 +73,38 @@ namespace robot_controllers {
         bool Pid::Init()
         {
             // sanity checks
-            // if we have position input, we need also velocity input and output needs to have force
-            if ((input_.GetType() & IOType::Position) && (!(input_.GetType() & IOType::Velocity) || !(output_.GetType() & IOType::Force)))
+            // if we have position input, output needs to have force
+            if ((input_.GetType() & IOType::Position) || (input_.GetType() & IOType::Velocity) && !(output_.GetType() & IOType::Force))
                 return false;
-            // if we have orientation input, we need also angular velocity input and output needs to have torque
-            if ((input_.GetType() & IOType::Orientation) && (!(input_.GetType() & IOType::AngularVelocity) || !(output_.GetType() & IOType::Torque)))
+            // if we have orientation input, output needs to have torque
+            if ((input_.GetType() & IOType::Orientation) || (input_.GetType() & IOType::AngularVelocity) && !(output_.GetType() & IOType::Torque))
                 return false;
 
             pid_params_.FromRobotParams(params_);
 
-            has_orientation_ = has_position_ = false;
+            has_orientation_ = has_position_ = has_angular_velocity_ = has_velocity_ = false;
 
             if (input_.GetType() & IOType::Position)
                 has_position_ = true;
+            if (input_.GetType() & IOType::Velocity)
+                has_velocity_ = true;
             if (input_.GetType() & IOType::Orientation)
                 has_orientation_ = true;
+            if (input_.GetType() & IOType::AngularVelocity)
+                has_angular_velocity_ = true;
 
             dim_ = params_.input_dim_;
 
-            if (has_orientation_) {
+            if (has_orientation_ || has_angular_velocity_) {
                 // Orientation is always 3D
                 dim_ = params_.input_dim_ - 3;
             }
 
-            if (has_orientation_ && (params_.input_dim_ < 3)) {
+            if ((has_orientation_ || has_angular_velocity_) && (params_.input_dim_ < 3)) {
                 // if we have orientation, then dimension of positions/orientations should be 3
                 return false;
             }
 
-            if (has_position_)
-                state_.position_ = Eigen::VectorXd::Zero(dim_);
-            if (has_orientation_) // TO-DO: Maybe not zero?
-                state_.orientation_ = Eigen::VectorXd::Zero(3);
             intergral_error_ = Eigen::VectorXd::Zero(params_.input_dim_);
 
             return true;
@@ -132,18 +132,24 @@ namespace robot_controllers {
             }
 
             Eigen::VectorXd vel_error = Eigen::VectorXd::Zero(params_.input_dim_);
+            // if not velocity given, we assume target is zero velocities
             if (has_position_)
-                vel_error.tail(dim_) = input_.desired_.velocity_ - curr_state.velocity_;
+                vel_error.tail(dim_) = -curr_state.velocity_;
+            if (has_velocity_)
+                vel_error.tail(dim_) += input_.desired_.velocity_;
+
             if (has_orientation_)
-                vel_error.head(3) = input_.desired_.angular_velocity_ - curr_state.angular_velocity_;
+                vel_error.head(3) = -curr_state.angular_velocity_;
+            if (has_angular_velocity_)
+                vel_error.head(3) += input_.desired_.angular_velocity_;
 
             intergral_error_.array() += error.array() * params_.time_step_; // TO-DO: What about the velocity error?
 
             Eigen::VectorXd ft = pid_params_.p_matrix_ * error + pid_params_.d_matrix_ * vel_error + pid_params_.i_matrix_ * intergral_error_;
 
-            if (has_position_)
+            if (has_position_ || has_velocity_)
                 output_.desired_.force_ = ft.tail(dim_);
-            if (has_orientation_)
+            if (has_orientation_ || has_angular_velocity_)
                 output_.desired_.torque_ = ft.head(3);
         }
 
