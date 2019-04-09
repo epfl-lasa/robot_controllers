@@ -30,8 +30,10 @@ namespace robot_controllers {
         {
             assert(eigvals.size() <= dim && eigvals.size() > 0);
 
+
             params_.input_dim_ = dim;
             params_.output_dim_ = dim;
+            params_.values_ = eigvals;
 
             // Fill the eigenvalue matrix
             eig_matrix_ = Eigen::MatrixXd::Zero(dim, dim);

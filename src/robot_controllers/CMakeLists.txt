@@ -2,6 +2,7 @@ set(robot_controllers_HEADERS
     AbstractController.hpp
     CascadeController.hpp
     SumController.hpp
+    low/PassiveDS.hpp
     ${CMAKE_CURRENT_BINARY_DIR}/Config.hpp
 )
 
@@ -9,6 +10,8 @@ set(robot_controllers_SOURCES
     AbstractController.cpp
     CascadeController.cpp
     SumController.cpp
+    low/PassiveDS.cpp
+
 )
 
 set(robot_controllers_utils_HEADERS
