@@ -6,65 +6,33 @@
 
 namespace robot_controllers {
     namespace low {
-        struct ParamsPassiveDS {
-            Eigen::MatrixXd damping_matrix_,
-                basis_matrix_,
-                eig_matrix_;
-            int params_dim_,
-                num_eigval_;
-        };
-
         class PassiveDS : public AbstractController {
         public:
+            explicit PassiveDS(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
+            {
+                input_ = RobotIO(IOType::Velocity);
+                output_ = RobotIO(IOType::Force);
+            }
+
             PassiveDS() : AbstractController(IOType::Velocity, IOType::Force) {}
             ~PassiveDS() {}
 
-            template <typename... Args>
-            PassiveDS(unsigned int dim, Args... args) : AbstractController(IOType::Velocity, IOType::Force)
-            {
-                // Set input state dimension and eigenvalues set
-                params_.num_eigval_ = 0;
-                params_.params_dim_ = dim;
-
-                // Fill the eigenvalue matrix
-                params_.eig_matrix_ = Eigen::MatrixXd::Zero(dim, dim);
-
-                AddEigval(args...);
-
-                for (size_t i = params_.num_eigval_; i < dim; i++)
-                    params_.eig_matrix_(i, i) = params_.eig_matrix_(params_.num_eigval_ - 1, params_.num_eigval_ - 1);
-
-                // Initialize the basis matrix
-                params_.basis_matrix_ = Eigen::MatrixXd::Random(dim, dim);
-                Orthonormalize();
-                AssertOrthonormalize();
-
-                // Initialize the damping matrix
-                params_.damping_matrix_ = Eigen::MatrixXd::Zero(dim, dim);
-            }
-
             bool Init() override;
+
+            void SetIOTypes(IOTypes input_type, IOTypes output_type) override {} // Do not allow changes in the IO types
 
             void Update(const RobotState& state) override;
 
-            void SetParams(unsigned int dim, const std::vector<double>& eigvals, bool init = true);
+            void SetParams(unsigned int dim, const std::vector<double>& eigvals);
 
             // SetInput  -> Inherited from AbstractController
             // GetInput  -> Inherited from AbstractController
             // GetOutput -> Inherited from AbstractController
 
         protected:
-            ParamsPassiveDS params_;
-
-            template <typename... Args>
-            void AddEigval(double T, Args... args)
-            {
-                params_.eig_matrix_(params_.num_eigval_, params_.num_eigval_) = T;
-                params_.num_eigval_++;
-                AddEigval(args...);
-            }
-
-            void AddEigval(double T);
+            Eigen::MatrixXd damping_matrix_,
+                basis_matrix_,
+                eig_matrix_;
 
             void Orthonormalize();
 

@@ -11,11 +11,14 @@
 namespace robot_controllers {
     class SumController : public AbstractController {
     public:
-        SumController(IOType input_type, IOType output_type) : AbstractController(input_type, output_type) {}
+        explicit SumController(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin) {}
+        SumController() : AbstractController() {}
         ~SumController() {}
 
         bool Init() override;
         void Update(const RobotState& state) override;
+
+        void AddController(std::unique_ptr<AbstractController> controller);
 
         template <typename T, typename... Args>
         void AddController(Args... args)
@@ -32,7 +35,7 @@ namespace robot_controllers {
     protected:
         std::vector<std::unique_ptr<AbstractController>> controllers_;
 
-        bool CheckConsistency() const;
+        bool CheckConsistency();
     };
 
 } // namespace robot_controllers

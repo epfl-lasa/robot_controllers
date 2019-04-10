@@ -21,6 +21,11 @@ namespace robot_controllers {
         output_.desired_ = curr;
     }
 
+    void CascadeController::AddController(std::unique_ptr<AbstractController> controller)
+    {
+        controllers_.emplace_back(std::move(controller));
+    }
+
     AbstractController* CascadeController::GetController(unsigned int index)
     {
         assert(index < controllers_.size());
@@ -33,15 +38,25 @@ namespace robot_controllers {
         return controllers_[index].get();
     }
 
-    bool CascadeController::CheckConsistency() const
+    bool CascadeController::CheckConsistency()
     {
-        IOTypes t = input_.type_;
+        if (controllers_.size() == 0)
+            return false;
+        input_ = RobotIO(controllers_.front()->GetInput().GetType());
+        output_ = RobotIO(controllers_.back()->GetOutput().GetType());
+
+        IOTypes t = IOType::All;
         for (auto& ctrl : controllers_) {
-            if (ctrl->GetInput().type_ != t)
+            if (!(ctrl->GetInput().GetType() & t))
                 return false;
-            t = ctrl->GetOutput().type_;
+            t = ctrl->GetOutput().GetType();
         }
 
-        return (controllers_.back()->GetOutput().type_ == output_.type_);
+        if (controllers_.back()->GetOutput().GetType() & output_.GetType())
+            return true;
+
+        return false;
     }
 } // namespace robot_controllers
+
+CORRADE_PLUGIN_REGISTER(CascadeController, robot_controllers::CascadeController, "RobotControllers.AbstractController/1.0")

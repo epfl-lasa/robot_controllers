@@ -3,29 +3,39 @@
 
 #include <Eigen/Core>
 
-#include "robot_controllers/AbstractController.hpp"
+#include <robot_controllers/AbstractController.hpp>
 
 namespace robot_controllers {
     namespace high {
         struct ParamsLinearDS {
             Eigen::MatrixXd A_;
-            unsigned int dim_;
-            double dt_;
+            double time_step_;
+
+            RobotParams ToRobotParams() const;
+            void FromRobotParams(const RobotParams& p);
         };
 
         class LinearDS : public AbstractController {
         public:
-            LinearDS() : AbstractController(IOType::Position, IOType::Velocity) {}
-            LinearDS(Eigen::MatrixXd A, double dt = 0.001);
+            explicit LinearDS(Corrade::PluginManager::AbstractManager& manager, const std::string& plugin) : AbstractController(manager, plugin)
+            {
+                input_ = RobotIO(IOType::Position);
+                output_ = RobotIO(IOType::Velocity | IOType::Position);
+            }
+
+            LinearDS() : AbstractController(IOType::Position, IOType::Velocity | IOType::Position) {}
             ~LinearDS() {}
 
             bool Init() override;
+
+            void SetIOTypes(IOTypes input_type, IOTypes output_type) override {} // Do not allow changes in the IO types
+
             void Update(const RobotState& state) override;
 
-            void SetDesired(const Eigen::VectorXd& position);
+            void SetParams(const ParamsLinearDS& params);
 
         protected:
-            ParamsLinearDS params_;
+            ParamsLinearDS linear_ds_params_;
         };
     } // namespace high
 } // namespace robot_controllers

@@ -11,24 +11,31 @@ This repo contains "low" and "high" level controllers for robotics control throu
 #### Low-Level controllers
 - Passive DS Controller:
   "Passive Interaction Control With Dynamical Systems", *Klas Kronander and Aude Billard*, 2016, https://ieeexplore.ieee.org/document/7358081
+- PID Controller
 
 #### High-Level controllers
 - Simple Linear DS high level controller
 
 ### Installing
 
-- `mkdir build && cd build`
-- `cmake -DCMAKE_INSTALL_PREFIX:PATH=/path/to/install/dir/ ..`
-- `make && [sudo] make install` (you might need sudo depending on your installation directory)
+#### Dependencies
 
-#### Running the examples
+```sh
+cd /source/directory
+git clone https://github.com/mosra/corrade.git
+cd corrade
+mkdir build && cd build
+cmake ..
+make -j
+sudo make install
+```
 
-- `./src/examples/linear_test`
+#### Compilation
 
-The executables should be inside the `build/src/examples` folder.
+```sh
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/dir/ ..
+make && [sudo] make install (you might need sudo depending on your installation directory)
+```
 
-### Documentation
-
-Work in progress...
-
-Copyright (c) 2019, **Bernardo Fichera**
+Copyright (c) 2019, **Konstantinos Chatzilygeroudis, Bernardo Fichera**
