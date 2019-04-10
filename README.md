@@ -18,18 +18,24 @@ This repo contains "low" and "high" level controllers for robotics control throu
 
 ### Installing
 
-- `mkdir build && cd build`
-- `cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/dir/ ..`
-- `make && [sudo] make install` (you might need sudo depending on your installation directory)
+#### Dependencies
 
-#### Running the examples
+```sh
+cd /source/directory
+git clone https://github.com/mosra/corrade.git
+cd corrade
+mkdir build && cd build
+cmake ..
+make -j
+sudo make install
+```
 
-- `./src/examples/linear_test`
+#### Compilation
 
-The executables should be inside the `build/src/examples` folder.
-
-### Documentation
-
-Work in progress...
+```sh
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/dir/ ..
+make && [sudo] make install` (you might need sudo depending on your installation directory
+```
 
 Copyright (c) 2019, **Konstantinos Chatzilygeroudis, Bernardo Fichera**
