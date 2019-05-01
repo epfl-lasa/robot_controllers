@@ -3,8 +3,8 @@ This repo contains "low" and "high" level controllers for robot control
 
 ### Authors/Maintainer
 
-- Bernardo Fichera
-- Konstantinos Chatzilygeroudis
+- Bernardo Fichera (bernardo.fichera@epfl.ch)
+- Konstantinos Chatzilygeroudis (konstantinos.chatzilygeroudis@epfl.ch)
 
 ### Available Controllers
 
@@ -37,5 +37,3 @@ mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/dir/ ..
 make && [sudo] make install (you might need sudo depending on your installation directory)
 ```
-
-Copyright (c) 2019, **Konstantinos Chatzilygeroudis, Bernardo Fichera**
