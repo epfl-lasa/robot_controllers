@@ -37,3 +37,6 @@ mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/dir/ ..
 make && [sudo] make install (you might need sudo depending on your installation directory)
 ```
+### Documentation
+
+WORK IN PROGRESS
