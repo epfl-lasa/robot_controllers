@@ -40,7 +40,7 @@ make && [sudo] make install (you might need sudo depending on your installation 
 
 ### Contributing
 
-**robot_controllers** is being actively developped and the API is not stable. Please see [CONTRIBUTING](CONTRIBUTING.md) for more on how to help.
+**robot_controllers** is being actively developed and the API is not stable. Please see [CONTRIBUTING](CONTRIBUTING.md) for more on how to help.
 
 ### Documentation
 
