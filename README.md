@@ -37,6 +37,11 @@ mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/path/to/install/dir/ ..
 make && [sudo] make install (you might need sudo depending on your installation directory)
 ```
+
+### Contributing
+
+**robot_controllers** is being actively developped and the API is not stable. Please see [CONTRIBUTING](CONTRIBUTING.md) for more on how to help.
+
 ### Documentation
 
-WORK IN PROGRESS
+UNDER CONSTRUCTION
