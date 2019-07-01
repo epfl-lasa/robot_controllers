@@ -29,8 +29,8 @@ namespace robot_controllers {
             assert(params_.input_dim_ == params_.output_dim_);
             assert(params_.values_.size() > 0);
 
-            damping_ = params_.values_[0];
-            assert(damping_ > 0.);
+            SetDamping(params_.values_[0]);
+
             return true;
         }
 
