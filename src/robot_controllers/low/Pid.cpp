@@ -148,7 +148,7 @@ namespace robot_controllers {
             if (has_orientation_) {
                 Eigen::Matrix3d curr_rot = Eigen::AngleAxisd(curr_state.orientation_.norm(), curr_state.orientation_.normalized()).toRotationMatrix();
                 Eigen::Matrix3d desired_rot = Eigen::AngleAxisd(input_.desired_.orientation_.norm(), input_.desired_.orientation_.normalized()).toRotationMatrix();
-                desired_pose.head(3) = utils::rotation_error(desired_rot, curr_rot);
+                error.head(3) = utils::rotation_error(desired_rot, curr_rot);
             }
 
             Eigen::VectorXd vel_error = Eigen::VectorXd::Zero(params_.input_dim_);
