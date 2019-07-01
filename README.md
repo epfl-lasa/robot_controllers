@@ -15,6 +15,7 @@ This repo contains "low" and "high" level controllers for robot control
 
 #### High-Level controllers
 - Simple Linear DS high level controller
+- Force Modulation DS: "A Dynamical System Approach to Motion and Force Generation in Contact Tasks", *Amanhoud Walid, Mahdi Khoramshahi and Aude Billard*, 2019, http://lasa.epfl.ch/publications/uploadedFiles/RSS%20legacy%20paper_template%20LaTeX_compressed.pdf
 
 ### Installing
 

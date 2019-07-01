@@ -21,13 +21,20 @@
 # All headers for installation
 set(high_level_controllers_HEADERS
     LinearDS.hpp
+    ForceModDS.hpp
 )
 
 # Linear DS plugin
 corrade_add_plugin(LinearDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf LinearDS.cpp ${robot_controllers_utils_SOURCES})
+corrade_add_plugin(ForceModDSController ${CMAKE_CURRENT_BINARY_DIR} "" Dummy.conf ForceModDS.cpp ${robot_controllers_utils_SOURCES})
 
 # Includes
 target_include_directories(LinearDSController PUBLIC
+    ${PROJECT_SOURCE_DIR}/src
+    ${Eigen3_INCLUDE_DIRS}
+    $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>)
+
+target_include_directories(ForceModDSController PUBLIC
     ${PROJECT_SOURCE_DIR}/src
     ${Eigen3_INCLUDE_DIRS}
     $<TARGET_PROPERTY:Corrade::PluginManager,INTERFACE_INCLUDE_DIRECTORIES>)
@@ -36,12 +43,20 @@ target_include_directories(LinearDSController PUBLIC
 set_property(TARGET LinearDSController PROPERTY CXX_STANDARD 11)
 set_property(TARGET LinearDSController PROPERTY CXX_STANDARD_REQUIRED ON)
 
+set_property(TARGET ForceModDSController PROPERTY CXX_STANDARD 11)
+set_property(TARGET ForceModDSController PROPERTY CXX_STANDARD_REQUIRED ON)
+
 target_link_libraries(LinearDSController PUBLIC RobotControllers)
+
+target_link_libraries(ForceModDSController PUBLIC RobotControllers)
 
 # Add SIMD
 add_simd(LinearDSController)
+add_simd(ForceModDSController)
 
 install(TARGETS LinearDSController
+    LIBRARY DESTINATION ${ROBOT_CONTROLLERS_PLUGINS_DIR})
+install(TARGETS ForceModDSController
     LIBRARY DESTINATION ${ROBOT_CONTROLLERS_PLUGINS_DIR})
 
 install(FILES ${high_level_controllers_HEADERS} DESTINATION ${ROBOT_CONTROLLERS_INCLUDE_INSTALL_DIR}/high)
