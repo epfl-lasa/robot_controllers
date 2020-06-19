@@ -2,7 +2,7 @@
 //|    Copyright (C) 2019 Learning Algorithms and Systems Laboratory, EPFL, Switzerland
 //|    Authors:  Konstantinos Chatzilygeroudis (maintainer)
 //|              Bernardo Fichera
-//|    email:   konstantinos.chatzilygeroudis@epfl.ch
+//|    email:   costashatz@gmail.com
 //|             bernardo.fichera@epfl.ch
 //|    website: lasa.epfl.ch
 //|

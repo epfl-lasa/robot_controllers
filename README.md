@@ -4,7 +4,7 @@ This repo contains "low" and "high" level controllers for robot control
 ### Authors/Maintainers
 
 - Bernardo Fichera (bernardo.fichera@epfl.ch)
-- Konstantinos Chatzilygeroudis (konstantinos.chatzilygeroudis@epfl.ch)
+- Konstantinos Chatzilygeroudis (costashatz@gmail.com)
 
 ### Available Controllers
 
