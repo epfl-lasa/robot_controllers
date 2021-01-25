@@ -18,7 +18,9 @@
 #|    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #|    GNU General Public License for more details.
 #|
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.0)
+
+cmake_policy(SET CMP0057 NEW)
 
 # Set the name of your project here
 project(robot_controllers)
