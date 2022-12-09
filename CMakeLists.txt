@@ -23,7 +23,8 @@ cmake_minimum_required(VERSION 3.0)
 # Set the name of your project here
 project(robot_controllers)
 
-option(ENABLE_SIMD "Build with all SIMD instructions on the current local machine" ON)
+# When enabling SIMD, both the dependencies (e.g. RBDyn) and subsequent code need to be compiled with SIMD
+option(ENABLE_SIMD "Build with all SIMD instructions on the current local machine" OFF)
 
 find_package(PkgConfig)
 
